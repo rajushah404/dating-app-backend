@@ -1,6 +1,6 @@
 const express = require('express');
-const User = require('../models/User');
-const authenticate = require('../middleware/auth');
+const User = require('../../models/User');
+const authenticate = require('../../middleware/auth');
 
 const router = express.Router();
 
@@ -20,7 +20,6 @@ router.get('/profile', authenticate, async (req, res) => {
         firebaseUid,
         name: req.user.name || 'Unknown', // Use name from token or default
         email: req.user.email,
-        photoURL: req.user.picture || null, // Use photoURL from token if available
       });
 
       // Save the new user to the database
@@ -38,10 +37,6 @@ router.get('/profile', authenticate, async (req, res) => {
         firebaseUid: user.firebaseUid,
         name: user.name,
         email: user.email,
-        photoURL: user.photoURL,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
       },
     });
   } catch (error) {

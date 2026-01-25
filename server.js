@@ -3,8 +3,8 @@ require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const admin = require('firebase-admin');
 const connectDB = require('./src/config/database');
-const profileRoutes = require('./src/routes/profile');
-const authRoutes = require('./src/routes/auth');
+const profileRoutes = require('./src/routes/profile/profile');
+const authRoutes = require('./src/routes/auth/auth');
 
 // Initialize Firebase Admin SDK
 // Load the service account key from the path specified in environment variables

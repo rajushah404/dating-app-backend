@@ -1,6 +1,6 @@
 const express = require('express');
 const admin = require('firebase-admin');
-const User = require('../models/User');
+const User = require('../../models/User');
 
 const router = express.Router();
 
@@ -30,7 +30,6 @@ router.post('/auth', async (req, res) => {
         firebaseUid,
         name,
         email,
-        photoURL,
       });
       await user.save();
       console.log('User created:', user);
@@ -46,7 +45,6 @@ router.post('/auth', async (req, res) => {
         firebaseUid: user.firebaseUid,
         name: user.name,
         email: user.email,
-        photoURL: user.photoURL,
       },
     });
   } catch (error) {
