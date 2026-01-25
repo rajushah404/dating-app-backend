@@ -23,7 +23,7 @@ app.use(express.json());
 connectDB();
 
 // Use the routes
-app.use('/', profileRoutes);
+app.use('/api/users', profileRoutes);
 app.use('/', authRoutes);
 
 // Basic route for health check
