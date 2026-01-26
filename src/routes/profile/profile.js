@@ -18,7 +18,7 @@ router.get('/profile', authenticate, async (req, res) => {
     if (!user) {
       user = new User({
         firebaseUid,
-        name: req.user.name || 'Unknown', // Use name from token or default
+        name: req.user.name || 'Unknown',
         email: req.user.email,
       });
 
@@ -37,6 +37,7 @@ router.get('/profile', authenticate, async (req, res) => {
         firebaseUid: user.firebaseUid,
         name: user.name,
         email: user.email,
+        profileCompleted: user.profileCompleted,
       },
     });
   } catch (error) {
