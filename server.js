@@ -5,6 +5,7 @@ const admin = require('firebase-admin');
 const connectDB = require('./src/config/database');
 const profileRoutes = require('./src/routes/profile/profile');
 const authRoutes = require('./src/routes/auth/auth');
+const connectionRoutes = require('./src/routes/connection/connection');
 const errorHandler = require('./middlewares/errorHandler');
 const { success } = require('./utils/response');
 
@@ -25,6 +26,7 @@ connectDB();
 
 // Use the routes
 app.use('/api/users', profileRoutes);
+app.use('/api/connections', connectionRoutes);
 app.use('/', authRoutes);
 
 // Basic route for health check
