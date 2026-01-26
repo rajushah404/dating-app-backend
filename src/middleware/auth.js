@@ -19,8 +19,7 @@ const authenticate = async (req, res, next) => {
 
     // Attach the decoded token (containing user info) to the request object
     req.user = decodedToken;
-    console.log('Authenticated user:', decodedToken);
-
+    
     // Proceed to the next middleware or route handler
     next();
   } catch (error) {

@@ -6,7 +6,6 @@ const router = express.Router();
 
 // POST /auth route to authenticate user with Firebase ID token
 router.post('/auth', async (req, res) => {
-  console.log('Auth request received:', req.body);
   try {
     const { idToken } = req.body;
 
@@ -32,7 +31,7 @@ router.post('/auth', async (req, res) => {
         email,
       });
       await user.save();
-      console.log('User created:', user);
+
     } else {
       console.log('User already exists:', user);
     }

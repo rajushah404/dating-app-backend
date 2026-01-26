@@ -6,7 +6,7 @@ const router = express.Router();
 
 // POST /profile route to get or create user profile
 router.get('/profile', authenticate, async (req, res) => {
-  console.log('Profile request for user:', req.user.uid);
+
   try {
     // Extract the Firebase UID from the authenticated user
     const firebaseUid = req.user.uid;
@@ -24,7 +24,7 @@ router.get('/profile', authenticate, async (req, res) => {
 
       // Save the new user to the database
       await user.save();
-      console.log('User created in profile:', user);
+
     } else {
       console.log('User found in profile:', user);
     }
@@ -49,6 +49,8 @@ router.get('/profile', authenticate, async (req, res) => {
 router.patch('/update-profile', authenticate, async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
+
+    console.log('Update profile request body:', req.body);
     const allowedFields = [
       "name",
       "age",
@@ -63,7 +65,7 @@ router.patch('/update-profile', authenticate, async (req, res) => {
       "photos",
       "location",
       "locationEnabled",
-      "maxDistanceKm"
+      "maxDistanceKm",
     ];
 
     const updates = {};
@@ -206,7 +208,7 @@ router.patch('/update-profile', authenticate, async (req, res) => {
         break;
       }
     }
-    if (!updatedUser.photos || updatedUser.photos.length < 1) completed = false;
+    //if (!updatedUser.photos || updatedUser.photos.length < 1) completed = false;
     if (updatedUser.locationEnabled !== true) completed = false;
 
     if (completed && !updatedUser.profileCompleted) {
