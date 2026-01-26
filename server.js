@@ -5,9 +5,10 @@ const admin = require('firebase-admin');
 const connectDB = require('./src/config/database');
 const profileRoutes = require('./src/routes/profile/profile');
 const authRoutes = require('./src/routes/auth/auth');
+const errorHandler = require('./middlewares/errorHandler');
+const { success } = require('./utils/response');
 
 // Initialize Firebase Admin SDK
-// Load the service account key from the path specified in environment variables
 const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
 
 admin.initializeApp({
@@ -28,13 +29,16 @@ app.use('/', authRoutes);
 
 // Basic route for health check
 app.get('/', (req, res) => {
-  res.send('Dating App Backend is running!');
+  success(res, 'Dating App Backend is running!');
 });
 
 // Test route
 app.get('/test', (req, res) => {
-  res.json({ message: 'Test successful' });
+  success(res, 'Test successful');
 });
+
+// Global Error Handling Middleware (must be after all routes)
+app.use(errorHandler);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
