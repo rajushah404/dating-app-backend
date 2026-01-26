@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/auth', async (req, res) => {
   try {
     const { idToken } = req.body;
+    console.log('Received ID token:', idToken);
 
     if (!idToken) {
       return res.status(400).json({ error: 'ID token is required' });
@@ -18,22 +19,18 @@ router.post('/auth', async (req, res) => {
 
     // Extract user info
     const firebaseUid = decodedToken.uid;
-    const name = decodedToken.name || 'Unknown';
     const email = decodedToken.email;
     const photoURL = decodedToken.picture || null;
 
-    // Check if user exists, if not, create
+    // Check if user exists, if not, create; if exists, update info
     let user = await User.findOne({ firebaseUid });
     if (!user) {
       user = new User({
         firebaseUid,
-        name,
         email,
       });
       await user.save();
-
-    } else {
-      console.log('User already exists:', user);
+      console.log('New user created:', user);
     }
 
     // Respond with success
@@ -42,8 +39,8 @@ router.post('/auth', async (req, res) => {
       user: {
         id: user._id,
         firebaseUid: user.firebaseUid,
-        name: user.name,
         email: user.email,
+        profileCompleted: user.profileCompleted,
       },
     });
   } catch (error) {

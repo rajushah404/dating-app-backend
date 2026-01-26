@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // User Details and Preferences Schema
 const userSchema = new mongoose.Schema({
   firebaseUid: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
+  name: { type: String, },
   email: { type: String, required: true, unique: true },
 
   gender: { type: String, enum: ["male", "female", "other"] },
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
   locationEnabled: { type: Boolean, default: false },
 
   location: {
-    type: { type: String, enum: ['Point'], default: 'Point' },
+    type: { type: String, enum: ['Point'], },
     coordinates: { type: [Number] } // get lng & lat from GPS
   },
 
@@ -62,22 +62,8 @@ const userSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-
-// Unique constraints
-userSchema.index({ firebaseUid: 1 }, { unique: true });
-userSchema.index({ email: 1 }, { unique: true });
-
 // Geo queries
 userSchema.index({ location: '2dsphere' });
-
-// Discovery & filtering
-userSchema.index({ gender: 1, age: 1 });
-userSchema.index({ interestedIn: 1 });
-userSchema.index({ lastActiveAt: -1 });
-
-// Profile quality
-userSchema.index({ isVerified: 1, profileCompleted: 1 });
-
 
 const User = mongoose.model('User', userSchema);
 
