@@ -1,10 +1,10 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const User = require('../../models/User');
-const asyncHandler = require('../../../utils/asyncHandler');
-const { success } = require('../../../utils/response');
-const { validateAuth } = require('../../../validators/auth.validator');
-const AppError = require('../../../utils/AppError');
+const asyncHandler = require('../../utils/asyncHandler');
+const { success } = require('../../utils/response');
+const { validateAuth } = require('../../validators/auth.validator');
+const AppError = require('../../utils/AppError');
 
 const authRouter = express.Router();
 

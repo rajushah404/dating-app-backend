@@ -1,11 +1,11 @@
 const express = require('express');
 const connectionService = require('../../services/connection.service');
 const User = require('../../models/User');
-const authenticate = require('../../../middlewares/auth');
-const asyncHandler = require('../../../utils/asyncHandler');
-const { success } = require('../../../utils/response');
-const { validateSendRequest, validateReviewRequest } = require('../../../validators/connection.validator');
-const AppError = require('../../../utils/AppError');
+const authenticate = require('../../middlewares/auth');
+const asyncHandler = require('../../utils/asyncHandler');
+const { success } = require('../../utils/response');
+const { validateSendRequest, validateReviewRequest } = require('../../validators/connection.validator');
+const AppError = require('../../utils/AppError');
 
 const router = express.Router();
 

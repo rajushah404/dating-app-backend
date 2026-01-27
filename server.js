@@ -7,8 +7,8 @@ const profileRoutes = require('./src/routes/profile/profile');
 const authRoutes = require('./src/routes/auth/auth');
 const connectionRoutes = require('./src/routes/connection/connection');
 const discoverRoutes = require('./src/routes/discover.routes');
-const errorHandler = require('./middlewares/errorHandler');
-const { success } = require('./utils/response');
+const errorHandler = require('./src/middlewares/errorHandler');
+const { success } = require('./src/utils/response');
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);

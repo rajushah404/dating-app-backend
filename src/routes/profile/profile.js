@@ -1,10 +1,10 @@
 const express = require('express');
 const User = require('../../models/User');
-const authenticate = require('../../../middlewares/auth');
-const asyncHandler = require('../../../utils/asyncHandler');
-const { success } = require('../../../utils/response');
-const { validateUpdateProfile } = require('../../../validators/profile.validator');
-const AppError = require('../../../utils/AppError');
+const authenticate = require('../../middlewares/auth');
+const asyncHandler = require('../../utils/asyncHandler');
+const { success } = require('../../utils/response');
+const { validateUpdateProfile } = require('../../validators/profile.validator');
+const AppError = require('../../utils/AppError');
 
 const router = express.Router();
 

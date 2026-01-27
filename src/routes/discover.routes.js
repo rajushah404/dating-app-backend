@@ -1,10 +1,10 @@
 const express = require('express');
 const discoverService = require('../services/discover.service');
-const authenticate = require('../../middlewares/auth');
-const asyncHandler = require('../../utils/asyncHandler');
-const { success } = require('../../utils/response');
+const authenticate = require('../middlewares/auth');
+const asyncHandler = require('../utils/asyncHandler');
+const { success } = require('../utils/response');
 const User = require('../models/User');
-const AppError = require('../../utils/AppError');
+const AppError = require('../utils/AppError');
 
 const router = express.Router();
 

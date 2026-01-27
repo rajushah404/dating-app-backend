@@ -1,6 +1,6 @@
 const userRepository = require('../repositories/user.repository');
 const connectionRepository = require('../repositories/connection.repository');
-const AppError = require('../../utils/AppError');
+const AppError = require('../utils/AppError');
 
 class DiscoverService {
     async getDiscoveryFeed(currentUserId, cursor, limit = 20, overrides = {}) {

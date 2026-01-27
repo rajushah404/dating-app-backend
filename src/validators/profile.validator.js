@@ -160,3 +160,4 @@ const validateUpdateProfile = (req, res, next) => {
 module.exports = {
     validateUpdateProfile,
 };
+
