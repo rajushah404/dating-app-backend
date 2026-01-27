@@ -57,7 +57,7 @@ class ConnectionRepository {
             .lean();
     }
 
-    async findUserRequestIds(userId) {
+    async findInteractedUserIds(userId) {
         const connections = await Connection.find({
             $or: [
                 { fromUser: userId },
@@ -66,10 +66,10 @@ class ConnectionRepository {
         }).select('fromUser toUser').lean();
 
         const interactionIds = connections.map(c =>
-            c.fromUser.toString() === userId.toString() ? c.toUser : c.fromUser
+            c.fromUser.toString() === userId.toString() ? String(c.toUser) : String(c.fromUser)
         );
 
-        return interactionIds;
+        return [...new Set(interactionIds)];
     }
 }
 
