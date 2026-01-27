@@ -7,7 +7,7 @@ const validateUpdateProfile = (req, res, next) => {
     const allowedFields = [
         "name", "age", "gender", "sexualOrientation", "interestedIn",
         "lookingFor", "lifestyle", "interests", "personality", "bio",
-        "photos", "location", "locationEnabled", "maxDistanceKm"
+        "photos", "location", "locationEnabled", "maxDistanceKm", "agePreference"
     ];
 
     // Check for invalid fields
@@ -131,6 +131,23 @@ const validateUpdateProfile = (req, res, next) => {
 
     if (updates.locationEnabled === true && (!updates.location || !updates.location.coordinates)) {
         errors.push('Location coordinates required when location enabled');
+    }
+
+    if (updates.agePreference !== undefined) {
+        if (typeof updates.agePreference !== 'object') {
+            errors.push('Age preference must be an object');
+        } else {
+            const { min, max } = updates.agePreference;
+            if (typeof min !== 'number' || min < 18 || min > 50) {
+                errors.push('Min age preference must be between 18 and 50');
+            }
+            if (typeof max !== 'number' || max < 18 || max > 50) {
+                errors.push('Max age preference must be between 18 and 50');
+            }
+            if (min > max) {
+                errors.push('Min age preference cannot be greater than max age');
+            }
+        }
     }
 
     if (errors.length > 0) {

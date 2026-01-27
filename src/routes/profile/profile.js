@@ -8,34 +8,40 @@ const AppError = require('../../../utils/AppError');
 
 const router = express.Router();
 
-// GET /profile route to get or create user profile
+// GET /profile route to get the logged-in user's own profile
 router.get('/profile', authenticate, asyncHandler(async (req, res) => {
-  // Extract the Firebase UID from the authenticated user
   const firebaseUid = req.user.uid;
 
-  // Try to find the user in the database
-  let user = await User.findOne({ firebaseUid });
+  let user = await User.findOne({ firebaseUid }).select('-__v');
 
-  // If user doesn't exist, create a new one
   if (!user) {
     user = new User({
       firebaseUid,
       name: req.user.name || 'Unknown',
       email: req.user.email,
     });
-
-    // Save the new user to the database
     await user.save();
   }
 
-  // Return the user profile
-  success(res, 'User profile retrieved successfully', {
-    id: user._id,
-    firebaseUid: user.firebaseUid,
-    name: user.name,
-    email: user.email,
-    profileCompleted: user.profileCompleted,
-  });
+  success(res, 'User profile retrieved successfully', user);
+}));
+
+/**
+ * @route GET /api/users/:userId
+ * @desc Get another user's public profile
+ */
+router.get('/:userId', authenticate, asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  // Use the repository method we just added
+  const userRepository = require('../../repositories/user.repository');
+  const user = await userRepository.findPublicProfileById(userId);
+
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  success(res, 'Public profile retrieved successfully', user);
 }));
 
 // PATCH /api/users/update-profile to update user profile fields

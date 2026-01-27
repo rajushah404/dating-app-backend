@@ -51,6 +51,11 @@ class UserRepository {
             .select('name age bio photos location')
             .lean();
     }
+    async findPublicProfileById(id) {
+        return await User.findById(id)
+            .select('-email -firebaseUid -__v -updatedAt')
+            .lean();
+    }
 }
 
 module.exports = new UserRepository();
