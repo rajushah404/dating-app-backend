@@ -7,9 +7,12 @@ const profileRoutes = require('./src/routes/profile/profile');
 const authRoutes = require('./src/routes/auth/auth');
 const connectionRoutes = require('./src/routes/connection/connection');
 const discoverRoutes = require('./src/routes/discover.routes');
+const messageRoutes = require('./src/routes/message.routes');
+
 const errorHandler = require('./src/middlewares/errorHandler');
 const { success } = require('./src/utils/response');
 const http = require('http');
+const { initializeSocket } = require('./src/utils/socket');
 
 
 // Initialize Firebase Admin SDK
@@ -32,6 +35,8 @@ connectDB();
 app.use('/api/users', profileRoutes);
 app.use('/api/connections', connectionRoutes);
 app.use('/api/discover', discoverRoutes);
+app.use('/api/messages', messageRoutes);
+
 app.use('/', authRoutes);
 
 // Basic route for health check
@@ -50,7 +55,7 @@ app.use(errorHandler);
 
 // Cerating HTTP Server
 const server = http.createServer(app);
-
+initializeSocket(server);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
