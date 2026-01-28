@@ -82,4 +82,21 @@ router.patch('/update-profile', authenticate, validateUpdateProfile, asyncHandle
   success(res, 'Profile updated successfully', updatedUser);
 }));
 
+/**
+ * @route POST /api/users/upload-photo
+ * @desc Upload a photo to Firebase Storage
+ */
+const upload = require('../../middlewares/upload.middleware');
+const { uploadFileToFirebase } = require('../../services/storage.service');
+
+router.post('/upload-photo', authenticate, upload.single('photo'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new AppError('Please upload a file', 400);
+  }
+
+  const imageUrl = await uploadFileToFirebase(req.file, `users/${req.user.uid}`);
+
+  success(res, 'Photo uploaded successfully', { imageUrl });
+}));
+
 module.exports = router;

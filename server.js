@@ -15,6 +15,7 @@ const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
 const app = express();
