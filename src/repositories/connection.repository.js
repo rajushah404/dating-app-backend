@@ -47,6 +47,19 @@ class ConnectionRepository {
             .lean();
     }
 
+    async findMatchedUserIds(userId) {
+        const connections = await Connection.find({
+            $or: [
+                { fromUser: userId, status: 'accepted' },
+                { toUser: userId, status: 'accepted' }
+            ]
+        }).select('fromUser toUser').lean();
+
+        return connections.map(c =>
+            c.fromUser.toString() === userId.toString() ? c.toUser.toString() : c.fromUser.toString()
+        );
+    }
+
     async findIncomingRequests(userId) {
         return await Connection.find({
             toUser: userId,

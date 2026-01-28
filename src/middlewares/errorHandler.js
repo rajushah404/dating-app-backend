@@ -26,7 +26,7 @@ const errorHandler = (err, req, res, next) => {
     }
 
     // Handle Firebase Auth Errors specifically if they come here
-    if (err.code && err.code.startsWith('auth/')) {
+    if (typeof err.code === 'string' && err.code.startsWith('auth/')) {
         statusCode = 401;
         message = 'Invalid or expired authentication token';
     }
