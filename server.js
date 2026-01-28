@@ -9,6 +9,8 @@ const connectionRoutes = require('./src/routes/connection/connection');
 const discoverRoutes = require('./src/routes/discover.routes');
 const errorHandler = require('./src/middlewares/errorHandler');
 const { success } = require('./src/utils/response');
+const http = require('http');
+
 
 // Initialize Firebase Admin SDK
 const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
@@ -45,8 +47,13 @@ app.get('/test', (req, res) => {
 // Global Error Handling Middleware (must be after all routes)
 app.use(errorHandler);
 
+
+// Cerating HTTP Server
+const server = http.createServer(app);
+
+
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
