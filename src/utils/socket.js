@@ -109,7 +109,12 @@ const getIO = () => {
     return io;
 };
 
+const isUserOnline = (userId) => {
+    return userSocketCount.has(userId.toString()) && userSocketCount.get(userId.toString()) > 0;
+};
+
 module.exports = {
     initializeSocket,
-    getIO
+    getIO,
+    isUserOnline
 };

@@ -1,5 +1,7 @@
 const connectionRepository = require('../repositories/connection.repository');
 const User = require('../models/User');
+const { getIO, isUserOnline } = require('../utils/socket');
+const notificationService = require('./notification.service');
 const {
     BadRequestError,
     NotFoundError,
@@ -20,22 +22,46 @@ class ConnectionService {
             throw new NotFoundError('Target user not found');
         }
 
+        const currentUser = await User.findById(fromUserId);
+
         // Duplicate request prevention (Only one active request between two users)
         const existingConnection = await connectionRepository.findBetweenUsers(fromUserId, toUserId);
         if (existingConnection) {
-            // If a connection already exists, we don't allow a new one.
-            // If it's accepted, they are already matched.
-            // If it's interested/ignored/rejected, we don't allow changing it via 'sendRequest' 
-            // except maybe if it was ignored/rejected but the user wants to keep the status?
-            // The rule says "Only one active request between two users".
             throw new ConflictError('A connection request already exists between these users');
         }
 
-        return await connectionRepository.create({
+        const connection = await connectionRepository.create({
             fromUser: fromUserId,
             toUser: toUserId,
             status
         });
+
+        // --- REAL-TIME NOTIFICATION ---
+        if (status === 'interested') {
+            try {
+                const io = getIO();
+                io.to(toUserId.toString()).emit('MATCH_REQUEST', {
+                    requestId: connection._id,
+                    fromUser: {
+                        _id: currentUser._id,
+                        name: currentUser.name,
+                        photos: currentUser.photos
+                    },
+                    sentAt: connection.createdAt
+                });
+            } catch (error) {
+                console.error('Socket notification failed for match request:', error.message);
+            }
+
+            // --- HYBRID: CLOUD PUSH NOTIFICATION ---
+            // Only send push if user is OFFLINE (App Closed/Backgrounded without socket)
+            const isOnline = isUserOnline(toUserId);
+            if (!isOnline && targetUser.fcmToken) {
+                notificationService.sendLikeNotification(targetUser.fcmToken, currentUser.name);
+            }
+        }
+
+        return connection;
     }
 
     async reviewRequest(requestId, receiverId, status) {
@@ -56,7 +82,49 @@ class ConnectionService {
         }
 
         // Update status
-        return await connectionRepository.updateStatus(requestId, status);
+        const updatedConnection = await connectionRepository.updateStatus(requestId, status);
+
+        // --- REAL-TIME MATCH NOTIFICATION ---
+        if (status === 'accepted') {
+            try {
+                const io = getIO();
+                const receiverUser = await User.findById(receiverId);
+
+                // Notify the person who SENT the original request that it was accepted
+                io.to(connection.fromUser.toString()).emit('MATCH_ACCEPTED', {
+                    connectionId: updatedConnection._id,
+                    user: {
+                        _id: receiverUser._id,
+                        name: receiverUser.name,
+                        photos: receiverUser.photos
+                    },
+                    matchedAt: updatedConnection.updatedAt
+                });
+            } catch (error) {
+                console.error('Socket notification failed for match acceptance:', error.message);
+            }
+
+            // --- HYBRID: CLOUD PUSH NOTIFICATION ---
+            const senderUser = await User.findById(connection.fromUser);
+            // Send push if sender is OFFLINE
+            const isSenderOnline = isUserOnline(connection.fromUser);
+
+            if (!isSenderOnline && senderUser.fcmToken) {
+                const receiverUser = await User.findById(receiverId);
+                // Extract photos to send in payload
+                const photos = receiverUser.photos ? receiverUser.photos.map(p => ({ url: p.url, isPrimary: p.isPrimary })) : [];
+
+                notificationService.sendMatchNotification(
+                    senderUser.fcmToken,
+                    receiverUser.name,
+                    receiverUser._id,
+                    updatedConnection._id,
+                    photos
+                );
+            }
+        }
+
+        return updatedConnection;
     }
 
     async getUserConnections(userId) {

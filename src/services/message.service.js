@@ -1,6 +1,8 @@
 const messageRepository = require('../repositories/message.repository');
 const connectionRepository = require('../repositories/connection.repository');
+const User = require('../models/User');
 const { getIO } = require('../utils/socket');
+const notificationService = require('./notification.service');
 const AppError = require('../utils/AppError');
 
 class MessageService {
@@ -32,7 +34,26 @@ class MessageService {
             createdAt: message.createdAt
         });
 
-        // 4. (Optional) Could also trigger a push notification here
+        // 4. --- HYBRID: CLOUD PUSH NOTIFICATION ---
+        try {
+            const receiver = await User.findById(receiverId);
+            const sender = await User.findById(senderId);
+            if (receiver.fcmToken) {
+                const senderPhoto = sender.photos && sender.photos.length > 0
+                    ? (sender.photos.find(p => p.isPrimary) || sender.photos[0]).url
+                    : null;
+
+                notificationService.sendMessageNotification(
+                    receiver.fcmToken,
+                    sender.name,
+                    content,
+                    senderId,
+                    senderPhoto
+                );
+            }
+        } catch (error) {
+            console.error('Failed to send message push notification:', error.message);
+        }
 
         return message;
     }

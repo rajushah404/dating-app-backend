@@ -7,7 +7,7 @@ const validateUpdateProfile = (req, res, next) => {
     const allowedFields = [
         "name", "age", "gender", "sexualOrientation", "interestedIn",
         "lookingFor", "lifestyle", "interests", "personality", "bio",
-        "photos", "location", "locationEnabled", "maxDistanceKm", "agePreference"
+        "photos", "location", "locationEnabled", "maxDistanceKm", "agePreference", "fcmToken"
     ];
 
     // Check for invalid fields
