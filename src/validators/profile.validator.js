@@ -1,5 +1,5 @@
 const AppError = require('../utils/AppError');
-const { NEPALI_INTERESTS } = require('../utils/constants');
+const { NEPALI_INTERESTS, NEPALI_PERSONALITIES, NEPALI_LOOKING_FOR } = require('../utils/constants');
 
 const validateUpdateProfile = (req, res, next) => {
     const updates = req.body;
@@ -48,6 +48,18 @@ const validateUpdateProfile = (req, res, next) => {
         }
     }
 
+    if (updates.personality !== undefined) {
+        if (!Array.isArray(updates.personality) || updates.personality.length > 10) {
+            errors.push('Personality must be an array with max 10 items');
+        } else {
+            updates.personality.forEach(trait => {
+                if (!NEPALI_PERSONALITIES.includes(trait)) {
+                    errors.push(`Invalid personality trait: ${trait}. Please choose from our local list.`);
+                }
+            });
+        }
+    }
+
     if (updates.sexualOrientation !== undefined) {
         if (!Array.isArray(updates.sexualOrientation)) {
             errors.push('Sexual orientation must be an array');
@@ -75,8 +87,7 @@ const validateUpdateProfile = (req, res, next) => {
     }
 
     if (updates.lookingFor !== undefined) {
-        const validLookingFor = ["long_term", "short_term", "casual", "friendship", "marriage", "not_sure"];
-        if (!validLookingFor.includes(updates.lookingFor)) {
+        if (!NEPALI_LOOKING_FOR.includes(updates.lookingFor)) {
             errors.push('Invalid looking for value');
         }
     }

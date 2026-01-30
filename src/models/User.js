@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
 
   lookingFor: {
     type: String,
-    enum: ["long_term", "short_term", "casual", "friendship", "marriage", "not_sure"]
+    enum: ["long-term relationship", "short-term relationship", "long-term, open to short", "short-term, open to long", "casual", "friendship", "marriage", "not sure", "dating"]
   },
 
   agePreference: {

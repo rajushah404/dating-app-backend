@@ -13,7 +13,7 @@ const connectionSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['ignored', 'interested', 'accepted', 'rejected'],
+    enum: ['ignored', 'interested', 'accepted', 'rejected', 'blocked'],
     required: true
   }
 }, {

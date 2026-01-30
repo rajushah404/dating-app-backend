@@ -1,5 +1,5 @@
 const express = require('express');
-const { NEPALI_INTERESTS } = require('../utils/constants');
+const { NEPALI_INTERESTS, NEPALI_PERSONALITIES, NEPALI_VOICE_PROMPTS, NEPALI_LOOKING_FOR } = require('../utils/constants');
 const { success } = require('../utils/response');
 
 const router = express.Router();
@@ -10,6 +10,30 @@ const router = express.Router();
  */
 router.get('/interests', (req, res) => {
     success(res, 'Interests fetched successfully', { interests: NEPALI_INTERESTS });
+});
+
+/**
+ * @route GET /api/meta/personalities
+ * @desc Get list of hyper-local Nepali personalities
+ */
+router.get('/personalities', (req, res) => {
+    success(res, 'Personalities fetched successfully', { personalities: NEPALI_PERSONALITIES });
+});
+
+/**
+ * @route GET /api/meta/prompts
+ * @desc Get list of voice prompts
+ */
+router.get('/prompts', (req, res) => {
+    success(res, 'Prompts fetched successfully', { prompts: NEPALI_VOICE_PROMPTS });
+});
+
+/**
+ * @route GET /api/meta/looking-for
+ * @desc Get list of looking for options
+ */
+router.get('/looking-for', (req, res) => {
+    success(res, 'Looking for options fetched successfully', { options: NEPALI_LOOKING_FOR });
 });
 
 module.exports = router;
