@@ -53,12 +53,9 @@ class ConnectionService {
                 console.error('Socket notification failed for match request:', error.message);
             }
 
-            // --- HYBRID: CLOUD PUSH NOTIFICATION ---
-            // Only send push if user is OFFLINE (App Closed/Backgrounded without socket)
-            const isOnline = isUserOnline(toUserId);
-            if (!isOnline && targetUser.fcmToken) {
-                notificationService.sendLikeNotification(targetUser.fcmToken, currentUser.name);
-            }
+            // --- CLOUD PUSH NOTIFICATION REMOVED ---
+            // Firebase notifications are disabled globally.
+
         }
 
         return connection;
@@ -104,24 +101,9 @@ class ConnectionService {
                 console.error('Socket notification failed for match acceptance:', error.message);
             }
 
-            // --- HYBRID: CLOUD PUSH NOTIFICATION ---
-            const senderUser = await User.findById(connection.fromUser);
-            // Send push if sender is OFFLINE
-            const isSenderOnline = isUserOnline(connection.fromUser);
+            // --- CLOUD PUSH NOTIFICATION REMOVED ---
+            // Firebase notifications are disabled globally.
 
-            if (!isSenderOnline && senderUser.fcmToken) {
-                const receiverUser = await User.findById(receiverId);
-                // Extract photos to send in payload
-                const photos = receiverUser.photos ? receiverUser.photos.map(p => ({ url: p.url, isPrimary: p.isPrimary })) : [];
-
-                notificationService.sendMatchNotification(
-                    senderUser.fcmToken,
-                    receiverUser.name,
-                    receiverUser._id,
-                    updatedConnection._id,
-                    photos
-                );
-            }
         }
 
         return updatedConnection;
@@ -141,7 +123,8 @@ class ConnectionService {
                 user: {
                     _id: otherUser._id,
                     name: otherUser.name,
-                    photos: otherUser.photos
+                    photos: otherUser.photos,
+                    onlineStatus: isUserOnline(otherUser._id) ? 'ONLINE' : 'OFFLINE'
                 },
                 matchedAt: conn.updatedAt
             };

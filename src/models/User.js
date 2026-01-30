@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   firebaseUid: { type: String, required: true, unique: true },
   name: { type: String, },
   email: { type: String, required: true, unique: true },
-  fcmToken: { type: String, default: null },
+
 
   gender: { type: String, enum: ["male", "female", "other"] },
   age: { type: Number, min: 18, max: 50 },

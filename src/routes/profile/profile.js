@@ -5,6 +5,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { success } = require('../../utils/response');
 const { validateUpdateProfile } = require('../../validators/profile.validator');
 const AppError = require('../../utils/AppError');
+const { isUserOnline } = require('../../utils/socket');
 
 const router = express.Router();
 
@@ -41,7 +42,12 @@ router.get('/:userId', authenticate, asyncHandler(async (req, res) => {
     throw new AppError('User not found', 404);
   }
 
-  success(res, 'Public profile retrieved successfully', user);
+  const profileData = {
+    ...user,
+    onlineStatus: isUserOnline(user._id) ? 'ONLINE' : 'OFFLINE'
+  };
+
+  success(res, 'Public profile retrieved successfully', profileData);
 }));
 
 // PATCH /api/users/update-profile to update user profile fields

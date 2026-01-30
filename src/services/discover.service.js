@@ -1,5 +1,6 @@
 const userRepository = require('../repositories/user.repository');
 const connectionRepository = require('../repositories/connection.repository');
+const { isUserOnline } = require('../utils/socket');
 const AppError = require('../utils/AppError');
 
 class DiscoverService {
@@ -73,7 +74,8 @@ class DiscoverService {
                 lastActiveAt: user.lastActiveAt,
                 photos: user.photos,
                 voicePrompt: user.voicePrompt,
-                distanceKm: parseFloat(distance.toFixed(1))
+                distanceKm: parseFloat(distance.toFixed(1)),
+                onlineStatus: isUserOnline(user._id) ? 'ONLINE' : 'OFFLINE'
             };
         });
     }

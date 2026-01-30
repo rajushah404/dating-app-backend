@@ -34,26 +34,9 @@ class MessageService {
             createdAt: message.createdAt
         });
 
-        // 4. --- HYBRID: CLOUD PUSH NOTIFICATION ---
-        try {
-            const receiver = await User.findById(receiverId);
-            const sender = await User.findById(senderId);
-            if (receiver.fcmToken) {
-                const senderPhoto = sender.photos && sender.photos.length > 0
-                    ? (sender.photos.find(p => p.isPrimary) || sender.photos[0]).url
-                    : null;
+        // 4. --- CLOUD PUSH NOTIFICATION REMOVED ---
+        // Firebase notifications are disabled globally.
 
-                notificationService.sendMessageNotification(
-                    receiver.fcmToken,
-                    sender.name,
-                    content,
-                    senderId,
-                    senderPhoto
-                );
-            }
-        } catch (error) {
-            console.error('Failed to send message push notification:', error.message);
-        }
 
         return message;
     }

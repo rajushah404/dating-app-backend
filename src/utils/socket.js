@@ -59,7 +59,7 @@ const initializeSocket = (server) => {
 
             if (senderId && receiverId) {
                 // Forward typing event to receiver's room
-                io.to(receiverId.toString()).emit('typing', {
+                io.to(receiverId.toString()).emit('typing_status', {
                     userId: senderId,
                     isTyping: !!isTyping
                 });
