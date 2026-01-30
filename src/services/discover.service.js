@@ -64,6 +64,13 @@ class DiscoverService {
                 name: user.name,
                 age: user.age,
                 bio: user.bio,
+                gender: user.gender,
+                lookingFor: user.lookingFor,
+                lifestyle: user.lifestyle,
+                interests: user.interests,
+                personality: user.personality,
+                isVerified: user.isVerified,
+                lastActiveAt: user.lastActiveAt,
                 photos: user.photos,
                 voicePrompt: user.voicePrompt,
                 distanceKm: parseFloat(distance.toFixed(1))
