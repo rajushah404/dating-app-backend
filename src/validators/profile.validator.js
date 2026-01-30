@@ -1,4 +1,5 @@
 const AppError = require('../utils/AppError');
+const { NEPALI_INTERESTS } = require('../utils/constants');
 
 const validateUpdateProfile = (req, res, next) => {
     const updates = req.body;
@@ -38,6 +39,12 @@ const validateUpdateProfile = (req, res, next) => {
     if (updates.interests !== undefined) {
         if (!Array.isArray(updates.interests) || updates.interests.length > 10) {
             errors.push('Interests must be an array with max 10 items');
+        } else {
+            updates.interests.forEach(interest => {
+                if (!NEPALI_INTERESTS.includes(interest)) {
+                    errors.push(`Invalid interest: ${interest}. Please choose from our local list.`);
+                }
+            });
         }
     }
 

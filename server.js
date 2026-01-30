@@ -8,6 +8,7 @@ const authRoutes = require('./src/routes/auth/auth');
 const connectionRoutes = require('./src/routes/connection/connection');
 const discoverRoutes = require('./src/routes/discover.routes');
 const messageRoutes = require('./src/routes/message.routes');
+const metaRoutes = require('./src/routes/meta.routes');
 
 const errorHandler = require('./src/middlewares/errorHandler');
 const { success } = require('./src/utils/response');
@@ -36,6 +37,7 @@ app.use('/api/users', profileRoutes);
 app.use('/api/connections', connectionRoutes);
 app.use('/api/discover', discoverRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/meta', metaRoutes);
 
 app.use('/', authRoutes);
 
