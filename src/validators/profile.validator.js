@@ -7,7 +7,7 @@ const validateUpdateProfile = (req, res, next) => {
     const allowedFields = [
         "name", "age", "gender", "sexualOrientation", "interestedIn",
         "lookingFor", "lifestyle", "interests", "personality", "bio",
-        "photos", "location", "locationEnabled", "maxDistanceKm", "agePreference", "fcmToken"
+        "photos", "voicePrompt", "location", "locationEnabled", "maxDistanceKm", "agePreference", "fcmToken"
     ];
 
     // Check for invalid fields
@@ -45,7 +45,7 @@ const validateUpdateProfile = (req, res, next) => {
         if (!Array.isArray(updates.sexualOrientation)) {
             errors.push('Sexual orientation must be an array');
         } else {
-            const validOrientations = ["straight", "gay", "lesbian", "bisexual", "asexual", "other"];
+            const validOrientations = ["straight", "gay", "lesbian", "bisexual", "other"];
             updates.sexualOrientation.forEach(orientation => {
                 if (!validOrientations.includes(orientation)) {
                     errors.push(`Invalid sexual orientation: ${orientation}`);

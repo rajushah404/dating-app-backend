@@ -94,9 +94,41 @@ router.post('/upload-photo', authenticate, upload.single('photo'), asyncHandler(
     throw new AppError('Please upload a file', 400);
   }
 
-  const imageUrl = await uploadFileToFirebase(req.file, `users/${req.user.uid}`);
+  const imageUrl = await uploadFileToFirebase(req.file, `users/${req.user.uid}/photos`);
 
   success(res, 'Photo uploaded successfully', { imageUrl });
+}));
+
+/**
+ * @route POST /api/users/upload-voice-prompt
+ * @desc Upload a voice prompt to Firebase Storage
+ */
+router.post('/upload-voice-prompt', authenticate, upload.single('audio'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new AppError('Please upload an audio file', 400);
+  }
+
+  const { duration, promptQuestion } = req.body;
+
+  const audioUrl = await uploadFileToFirebase(req.file, `users/${req.user.uid}/voice`);
+
+  // Update user model with voice prompt info
+  const updatedUser = await User.findOneAndUpdate(
+    { firebaseUid: req.user.uid },
+    {
+      $set: {
+        voicePrompt: {
+          url: audioUrl,
+          duration: duration ? parseInt(duration) : 0,
+          promptQuestion: promptQuestion || 'Introduction',
+          createdAt: new Date()
+        }
+      }
+    },
+    { new: true }
+  ).select('-__v');
+
+  success(res, 'Voice prompt uploaded successfully', { voicePrompt: updatedUser.voicePrompt });
 }));
 
 module.exports = router;

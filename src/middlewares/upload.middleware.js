@@ -12,17 +12,17 @@ const fileFilter = (req, file, cb) => {
         mimetype: file.mimetype
     });
 
-    // Supported extensions
-    const filetypes = /jpeg|jpg|png|gif|webp/;
+    // Supported extensions (Images & Audio)
+    const filetypes = /jpeg|jpg|png|gif|webp|mp3|wav|m4a|aac|ogg|mpeg/;
     // Check extension
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     // Check mimetype
-    const mimetype = file.mimetype.startsWith('image/') || filetypes.test(file.mimetype);
+    const mimetype = file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/') || file.mimetype === 'application/octet-stream';
 
     if (mimetype || extname) {
         cb(null, true);
     } else {
-        const error = new Error('Only image files are allowed!');
+        const error = new Error('Only image and audio files are allowed!');
         error.statusCode = 400;
         cb(error, false);
     }

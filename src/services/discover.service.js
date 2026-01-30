@@ -32,7 +32,7 @@ class DiscoverService {
             ageMin: overrides.ageMin || currentUser.agePreference?.min || 18,
             ageMax: overrides.ageMax || currentUser.agePreference?.max || 50,
             location: currentUser.location,
-            maxDistanceKm: overrides.distance || currentUser.maxDistanceKm || 50,
+            maxDistanceKm: overrides.distance || currentUser.maxDistanceKm || 10,
             cursor,
             limit: parseInt(limit)
         };
@@ -65,6 +65,7 @@ class DiscoverService {
                 age: user.age,
                 bio: user.bio,
                 photos: user.photos,
+                voicePrompt: user.voicePrompt,
                 distanceKm: parseFloat(distance.toFixed(1))
             };
         });

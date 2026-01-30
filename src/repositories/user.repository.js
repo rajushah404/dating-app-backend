@@ -48,7 +48,7 @@ class UserRepository {
 
         return await User.find(query)
             .limit(limit)
-            .select('name age bio photos location')
+            .select('name age bio photos voicePrompt location')
             .lean();
     }
     async findPublicProfileById(id) {

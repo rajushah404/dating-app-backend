@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 
   sexualOrientation: {
     type: [String],
-    enum: ["straight", "gay", "lesbian", "bisexual", "asexual", "other"]
+    enum: ["straight", "gay", "lesbian", "bisexual", "other"]
   },
 
   interestedIn: {
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     max: { type: Number, default: 50 }
   },
 
-  maxDistanceKm: { type: Number, default: 50 },
+  maxDistanceKm: { type: Number, default: 10 },
 
   lifestyle: {
     smoking: { type: String, enum: ["no", "occasionally", "yes"] },
@@ -48,6 +48,13 @@ const userSchema = new mongoose.Schema({
     isPrimary: Boolean,
     uploadedAt: Date
   }],
+
+  voicePrompt: {
+    url: String,
+    duration: Number, // in seconds
+    promptQuestion: String,
+    createdAt: { type: Date, default: Date.now }
+  },
 
   locationEnabled: { type: Boolean, default: false },
 
