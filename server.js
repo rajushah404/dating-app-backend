@@ -9,6 +9,7 @@ const connectionRoutes = require('./src/routes/connection/connection');
 const discoverRoutes = require('./src/routes/discover.routes');
 const messageRoutes = require('./src/routes/message.routes');
 const metaRoutes = require('./src/routes/meta.routes');
+const safetyRoutes = require('./src/routes/safety.routes');
 
 const errorHandler = require('./src/middlewares/errorHandler');
 const { success } = require('./src/utils/response');
@@ -24,10 +25,15 @@ admin.initializeApp({
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
+const { generalLimiter, authLimiter, reportLimiter } = require('./src/middlewares/rateLimiter');
+
 const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// Global Rate Limiter
+app.use('/api', generalLimiter);
 
 // Connect to the database
 connectDB();
@@ -38,8 +44,9 @@ app.use('/api/connections', connectionRoutes);
 app.use('/api/discover', discoverRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/meta', metaRoutes);
+app.use('/api/safety', reportLimiter, safetyRoutes);
 
-app.use('/', authRoutes);
+app.use('/', authLimiter, authRoutes);
 
 // Basic route for health check
 app.get('/', (req, res) => {

@@ -34,6 +34,32 @@ class ConnectionRepository {
         ).select('-__v').lean();
     }
 
+    async block(fromUser, toUser) {
+        // Find if a connection already exists in either direction
+        const existing = await Connection.findOne({
+            $or: [
+                { fromUser, toUser },
+                { fromUser: toUser, toUser: fromUser }
+            ]
+        });
+
+        if (existing) {
+            existing.status = 'blocked';
+            // Important: we keep the direction of 'who blocked whom' if we want, 
+            // but for a simple block, we can just update the status.
+            // If we want to know WHO blocked, we should probably set fromUser as the blocker.
+            existing.fromUser = fromUser;
+            existing.toUser = toUser;
+            return await existing.save();
+        }
+
+        return await Connection.create({
+            fromUser,
+            toUser,
+            status: 'blocked'
+        });
+    }
+
     async findUserConnections(userId) {
         return await Connection.find({
             $or: [

@@ -160,6 +160,15 @@ class ConnectionService {
             sentAt: req.createdAt
         }));
     }
+
+    async blockUser(fromUserId, toUserId) {
+        if (fromUserId.toString() === toUserId.toString()) {
+            throw new BadRequestError('You cannot block yourself');
+        }
+
+        const connection = await connectionRepository.block(fromUserId, toUserId);
+        return connection;
+    }
 }
 
 module.exports = new ConnectionService();
