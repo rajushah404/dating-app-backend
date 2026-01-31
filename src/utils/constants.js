@@ -72,13 +72,105 @@ const NEPALI_VOICE_PROMPTS = [
 ];
 
 const NEPALI_LOOKING_FOR = [
-    "long-term relationship", "short-term relationship", "long-term, open to short", "short-term, open to long",
-    "casual", "friendship", "marriage", "not sure", "dating"
+    "Serious Relationship (Bihe ko setting)",
+    "Chiya Date Buddy",
+    "Bindaas Dating",
+    "Traveling Partner (Ghumante)",
+    "Just Guff-gaff for now",
+    "Long-term relationship",
+    "Short-term relationship",
+    "Marriage",
+    "Not sure"
+];
+
+const NEPALI_SMOKING = [
+    "Anti-smoke Zone",
+    "Hookah / Shisha Lover",
+    "Occasionally (Party vibes only)",
+    "Regular Smoker",
+    "Non-smoker"
+];
+
+const NEPALI_DRINKING = [
+    "Chiya over Beer",
+    "Bhoj ma matrai (Social)",
+    "Raksi Handler",
+    "Occasionally",
+    "Regular Drinker",
+    "Teetotaler"
+];
+
+const NEPALI_WORKOUT = [
+    "Futsal every Friday",
+    "Morning Walk (Tundikhel vibe)",
+    "Gym Rat / Fitness Freak",
+    "Home Yoga & Meditation",
+    "Never",
+    "Sometimes",
+    "Regularly"
 ];
 
 module.exports = {
     NEPALI_INTERESTS,
     NEPALI_PERSONALITIES,
     NEPALI_VOICE_PROMPTS,
-    NEPALI_LOOKING_FOR
+    NEPALI_LOOKING_FOR,
+    NEPALI_SMOKING,
+    NEPALI_DRINKING,
+    NEPALI_WORKOUT,
+    NEPALI_HOMETOWNS,
+    NEPALI_DATE_VIBES,
+    NEPALI_SLANG_BADGES,
+    NEPALI_RASHI
 };
+
+const NEPALI_HOMETOWNS = [
+    "Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara", "Bharatpur", "Biratnagar", "Birgunj", "Janakpur",
+    "Ghorahi", "Hetauda", "Dharan", "Itahari", "Butwal", "Nepalgunj", "Dhangadhi", "Birtamod",
+    "Damak", "Lumbini", "Gorkha", "Mustang", "Manang", "Solukhumbu", "Ilam", "Dhankuta", "Palpa",
+    "Syangja", "Kaski", "Chitwan", "Surkhet", "Baglung", "Gulmi", "Arghakhanchi", "Pyuthan", "Rolpa",
+    "Dang", "Banke", "Bardia", "Kailali", "Kanchanpur", "Jhapa", "Morang", "Sunsari", "Saptari",
+    "Siraha", "Dhanusha", "Mahottari", "Sarlahi", "Rautahat", "Bara", "Parsa", "Makwanpur", "Sindhuli",
+    "Ramechhap", "Dolakha", "Sindhupalchok", "Kavre", "Nuwakot", "Rasuwa", "Dhading"
+];
+
+const NEPALI_DATE_VIBES = [
+    "Momo & Walk in Basantapur",
+    "Chiya Guff at a local galli",
+    "Evening vibes at Jhamel",
+    "Short hike to Shivapuri/Nagarkot",
+    "Thamel Nightlife & Live Music",
+    "Patan Museum & Coffee",
+    "Chandragiri Cable Car Trip",
+    "Street Food Hunt in Birtamod/Dharan",
+    "Lakeside Stroll in Pokhara",
+    "Movie Date in QFX"
+];
+
+const NEPALI_SLANG_BADGES = [
+    "Maya Ho",
+    "Yestai Ho",
+    "Khana Khayau?",
+    "Guffadi",
+    "Alchi",
+    "Bindaas",
+    "Sojho Keta/Keti",
+    "Batho",
+    "Ramitey",
+    "Nakhrebaaj"
+];
+
+const NEPALI_RASHI = [
+    "Mesh (Aries)",
+    "Brish (Taurus)",
+    "Mithun (Gemini)",
+    "Karkat (Cancer)",
+    "Simha (Leo)",
+    "Kanya (Virgo)",
+    "Tula (Libra)",
+    "Brishchik (Scorpio)",
+    "Dhanu (Sagittarius)",
+    "Makar (Capricorn)",
+    "Kumbha (Aquarius)",
+    "Meen (Pisces)"
+];

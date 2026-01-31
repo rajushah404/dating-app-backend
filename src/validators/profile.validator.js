@@ -1,5 +1,12 @@
 const AppError = require('../utils/AppError');
-const { NEPALI_INTERESTS, NEPALI_PERSONALITIES, NEPALI_LOOKING_FOR } = require('../utils/constants');
+const {
+    NEPALI_INTERESTS,
+    NEPALI_PERSONALITIES,
+    NEPALI_LOOKING_FOR,
+    NEPALI_SMOKING,
+    NEPALI_DRINKING,
+    NEPALI_WORKOUT
+} = require('../utils/constants');
 
 const validateUpdateProfile = (req, res, next) => {
     const updates = req.body;
@@ -96,18 +103,15 @@ const validateUpdateProfile = (req, res, next) => {
         if (typeof updates.lifestyle !== 'object') {
             errors.push('Lifestyle must be an object');
         } else {
-            const validSmoking = ["no", "occasionally", "yes"];
-            const validDrinking = ["no", "occasionally", "yes"];
-            const validWorkout = ["never", "sometimes", "regularly"];
 
-            if (updates.lifestyle.smoking && !validSmoking.includes(updates.lifestyle.smoking)) {
-                errors.push('Invalid smoking value');
+            if (updates.lifestyle.smoking && !NEPALI_SMOKING.includes(updates.lifestyle.smoking)) {
+                errors.push('Invalid smoking value. Please pick from the provided list.');
             }
-            if (updates.lifestyle.drinking && !validDrinking.includes(updates.lifestyle.drinking)) {
-                errors.push('Invalid drinking value');
+            if (updates.lifestyle.drinking && !NEPALI_DRINKING.includes(updates.lifestyle.drinking)) {
+                errors.push('Invalid drinking value. Please pick from the provided list.');
             }
-            if (updates.lifestyle.workout && !validWorkout.includes(updates.lifestyle.workout)) {
-                errors.push('Invalid workout value');
+            if (updates.lifestyle.workout && !NEPALI_WORKOUT.includes(updates.lifestyle.workout)) {
+                errors.push('Invalid workout value. Please pick from the provided list.');
             }
         }
     }

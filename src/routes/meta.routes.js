@@ -1,5 +1,13 @@
 const express = require('express');
-const { NEPALI_INTERESTS, NEPALI_PERSONALITIES, NEPALI_VOICE_PROMPTS, NEPALI_LOOKING_FOR } = require('../utils/constants');
+const {
+    NEPALI_INTERESTS,
+    NEPALI_PERSONALITIES,
+    NEPALI_VOICE_PROMPTS,
+    NEPALI_LOOKING_FOR,
+    NEPALI_SMOKING,
+    NEPALI_DRINKING,
+    NEPALI_WORKOUT
+} = require('../utils/constants');
 const { success } = require('../utils/response');
 
 const router = express.Router();
@@ -34,6 +42,18 @@ router.get('/prompts', (req, res) => {
  */
 router.get('/looking-for', (req, res) => {
     success(res, 'Looking for options fetched successfully', { options: NEPALI_LOOKING_FOR });
+});
+
+/**
+ * @route GET /api/meta/lifestyle
+ * @desc Get list of lifestyle options (smoking, drinking, workout)
+ */
+router.get('/lifestyle', (req, res) => {
+    success(res, 'Lifestyle options fetched successfully', {
+        smoking: NEPALI_SMOKING,
+        drinking: NEPALI_DRINKING,
+        workout: NEPALI_WORKOUT
+    });
 });
 
 module.exports = router;

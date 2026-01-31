@@ -21,8 +21,7 @@ const userSchema = new mongoose.Schema({
   },
 
   lookingFor: {
-    type: String,
-    enum: ["long-term relationship", "short-term relationship", "long-term, open to short", "short-term, open to long", "casual", "friendship", "marriage", "not sure", "dating"]
+    type: String
   },
 
   agePreference: {
@@ -33,9 +32,9 @@ const userSchema = new mongoose.Schema({
   maxDistanceKm: { type: Number, default: 10 },
 
   lifestyle: {
-    smoking: { type: String, enum: ["no", "occasionally", "yes"] },
-    drinking: { type: String, enum: ["no", "occasionally", "yes"] },
-    workout: { type: String, enum: ["never", "sometimes", "regularly"] }
+    smoking: { type: String },
+    drinking: { type: String },
+    workout: { type: String }
   },
 
   interests: [String],
