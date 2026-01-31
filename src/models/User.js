@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema({
 
   bio: { type: String, maxlength: 500 },
 
+  hometown: { type: String },
+  preferredDateVibe: { type: String },
+  slangBadges: [String],
+  rashi: { type: String },
+
   photos: [{
     url: String,
     isPrimary: Boolean,

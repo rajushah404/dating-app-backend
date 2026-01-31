@@ -110,20 +110,6 @@ const NEPALI_WORKOUT = [
     "Regularly"
 ];
 
-module.exports = {
-    NEPALI_INTERESTS,
-    NEPALI_PERSONALITIES,
-    NEPALI_VOICE_PROMPTS,
-    NEPALI_LOOKING_FOR,
-    NEPALI_SMOKING,
-    NEPALI_DRINKING,
-    NEPALI_WORKOUT,
-    NEPALI_HOMETOWNS,
-    NEPALI_DATE_VIBES,
-    NEPALI_SLANG_BADGES,
-    NEPALI_RASHI
-};
-
 const NEPALI_HOMETOWNS = [
     "Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara", "Bharatpur", "Biratnagar", "Birgunj", "Janakpur",
     "Ghorahi", "Hetauda", "Dharan", "Itahari", "Butwal", "Nepalgunj", "Dhangadhi", "Birtamod",
@@ -174,3 +160,17 @@ const NEPALI_RASHI = [
     "Kumbha (Aquarius)",
     "Meen (Pisces)"
 ];
+
+module.exports = {
+    NEPALI_INTERESTS,
+    NEPALI_PERSONALITIES,
+    NEPALI_VOICE_PROMPTS,
+    NEPALI_LOOKING_FOR,
+    NEPALI_SMOKING,
+    NEPALI_DRINKING,
+    NEPALI_WORKOUT,
+    NEPALI_HOMETOWNS,
+    NEPALI_DATE_VIBES,
+    NEPALI_SLANG_BADGES,
+    NEPALI_RASHI
+};

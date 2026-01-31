@@ -74,6 +74,10 @@ class DiscoverService {
                 lastActiveAt: user.lastActiveAt,
                 photos: user.photos,
                 voicePrompt: user.voicePrompt,
+                hometown: user.hometown,
+                preferredDateVibe: user.preferredDateVibe,
+                slangBadges: user.slangBadges,
+                rashi: user.rashi,
                 distanceKm: parseFloat(distance.toFixed(1)),
                 onlineStatus: isUserOnline(user._id) ? 'ONLINE' : 'OFFLINE'
             };

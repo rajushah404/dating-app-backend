@@ -6,7 +6,11 @@ const {
     NEPALI_LOOKING_FOR,
     NEPALI_SMOKING,
     NEPALI_DRINKING,
-    NEPALI_WORKOUT
+    NEPALI_WORKOUT,
+    NEPALI_HOMETOWNS,
+    NEPALI_DATE_VIBES,
+    NEPALI_SLANG_BADGES,
+    NEPALI_RASHI
 } = require('../utils/constants');
 const { success } = require('../utils/response');
 
@@ -54,6 +58,38 @@ router.get('/lifestyle', (req, res) => {
         drinking: NEPALI_DRINKING,
         workout: NEPALI_WORKOUT
     });
+});
+
+/**
+ * @route GET /api/meta/hometowns
+ * @desc Get list of Nepali hometowns (districts/cities)
+ */
+router.get('/hometowns', (req, res) => {
+    success(res, 'Hometowns fetched successfully', { hometowns: NEPALI_HOMETOWNS });
+});
+
+/**
+ * @route GET /api/meta/date-vibes
+ * @desc Get list of localized date vibes
+ */
+router.get('/date-vibes', (req, res) => {
+    success(res, 'Date vibes fetched successfully', { vibes: NEPALI_DATE_VIBES });
+});
+
+/**
+ * @route GET /api/meta/slang-badges
+ * @desc Get list of Nepali slang badges
+ */
+router.get('/slang-badges', (req, res) => {
+    success(res, 'Slang badges fetched successfully', { badges: NEPALI_SLANG_BADGES });
+});
+
+/**
+ * @route GET /api/meta/rashi
+ * @desc Get list of Vedic Rashi
+ */
+router.get('/rashi', (req, res) => {
+    success(res, 'Rashi fetched successfully', { rashi: NEPALI_RASHI });
 });
 
 module.exports = router;

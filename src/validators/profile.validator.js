@@ -5,7 +5,11 @@ const {
     NEPALI_LOOKING_FOR,
     NEPALI_SMOKING,
     NEPALI_DRINKING,
-    NEPALI_WORKOUT
+    NEPALI_WORKOUT,
+    NEPALI_HOMETOWNS,
+    NEPALI_DATE_VIBES,
+    NEPALI_SLANG_BADGES,
+    NEPALI_RASHI
 } = require('../utils/constants');
 
 const validateUpdateProfile = (req, res, next) => {
@@ -15,6 +19,7 @@ const validateUpdateProfile = (req, res, next) => {
     const allowedFields = [
         "name", "age", "gender", "sexualOrientation", "interestedIn",
         "lookingFor", "lifestyle", "interests", "personality", "bio",
+        "hometown", "preferredDateVibe", "slangBadges", "rashi",
         "photos", "voicePrompt", "location", "locationEnabled", "maxDistanceKm", "agePreference"
     ];
 
@@ -113,6 +118,36 @@ const validateUpdateProfile = (req, res, next) => {
             if (updates.lifestyle.workout && !NEPALI_WORKOUT.includes(updates.lifestyle.workout)) {
                 errors.push('Invalid workout value. Please pick from the provided list.');
             }
+        }
+    }
+
+    if (updates.hometown !== undefined) {
+        if (!NEPALI_HOMETOWNS.includes(updates.hometown)) {
+            errors.push('Invalid hometown. Please choose from our local list.');
+        }
+    }
+
+    if (updates.preferredDateVibe !== undefined) {
+        if (!NEPALI_DATE_VIBES.includes(updates.preferredDateVibe)) {
+            errors.push('Invalid preferred date vibe. Please choose from our local list.');
+        }
+    }
+
+    if (updates.slangBadges !== undefined) {
+        if (!Array.isArray(updates.slangBadges) || updates.slangBadges.length > 5) {
+            errors.push('Slang badges must be an array with max 5 items');
+        } else {
+            updates.slangBadges.forEach(badge => {
+                if (!NEPALI_SLANG_BADGES.includes(badge)) {
+                    errors.push(`Invalid slang badge: ${badge}. Please choose from our local list.`);
+                }
+            });
+        }
+    }
+
+    if (updates.rashi !== undefined) {
+        if (!NEPALI_RASHI.includes(updates.rashi)) {
+            errors.push('Invalid Rashi. Please choose from the list.');
         }
     }
 
