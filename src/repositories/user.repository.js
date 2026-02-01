@@ -15,6 +15,17 @@ class UserRepository {
             ageMax,
             location,
             maxDistanceKm,
+            hometown,
+            preferredDateVibe,
+            slangBadges,
+            rashi,
+            smoking,
+            drinking,
+            workout,
+            lookingFor,
+            interests,
+            personality,
+            isVerified,
             cursor,
             limit = 20
         } = filters;
@@ -38,6 +49,41 @@ class UserRepository {
                 }
             }
         };
+
+        // Apply additional filters if provided
+        if (hometown) {
+            query.hometown = { $regex: new RegExp(hometown, 'i') };
+        }
+        if (preferredDateVibe) {
+            query.preferredDateVibe = preferredDateVibe;
+        }
+        if (slangBadges && slangBadges.length > 0) {
+            query.slangBadges = { $in: slangBadges };
+        }
+        if (rashi) {
+            query.rashi = rashi;
+        }
+        if (smoking) {
+            query['lifestyle.smoking'] = smoking;
+        }
+        if (drinking) {
+            query['lifestyle.drinking'] = drinking;
+        }
+        if (workout) {
+            query['lifestyle.workout'] = workout;
+        }
+        if (lookingFor) {
+            query.lookingFor = lookingFor;
+        }
+        if (interests && interests.length > 0) {
+            query.interests = { $in: interests };
+        }
+        if (personality && personality.length > 0) {
+            query.personality = { $in: personality };
+        }
+        if (isVerified) {
+            query.isVerified = true;
+        }
 
         // If cursor is provided, filter for IDs greater than the cursor
         // Note: Stable sorting with $near and cursor pagination requires specific strategies,

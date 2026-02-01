@@ -23,13 +23,24 @@ const getDbUser = async (firebaseUid) => {
  */
 router.get('/', authenticate, asyncHandler(async (req, res) => {
     const dbUser = await getDbUser(req.user.uid);
-    const { cursor, limit, gender, ageMin, ageMax, distance } = req.query;
+    const { cursor, limit, gender, ageMin, ageMax, distance, hometown, preferredDateVibe, slangBadges, rashi, smoking, drinking, workout, lookingFor, interests, personality } = req.query;
 
     const overrides = {
         gender: gender ? gender.split(',') : null,
         ageMin: ageMin ? parseInt(ageMin) : null,
         ageMax: ageMax ? parseInt(ageMax) : null,
-        distance: distance ? parseInt(distance) : null
+        distance: distance ? parseInt(distance) : null,
+        hometown,
+        preferredDateVibe,
+        slangBadges: slangBadges ? slangBadges.split(',') : null,
+        rashi,
+        smoking,
+        drinking,
+        workout,
+        lookingFor,
+        interests: interests ? interests.split(',') : null,
+        personality: personality ? personality.split(',') : null,
+        isVerified: isVerified === 'true'
     };
 
     const discoveryFeed = await discoverService.getDiscoveryFeed(dbUser._id, cursor, limit, overrides);

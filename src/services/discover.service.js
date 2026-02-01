@@ -34,6 +34,17 @@ class DiscoverService {
             ageMax: overrides.ageMax || currentUser.agePreference?.max || 50,
             location: currentUser.location,
             maxDistanceKm: overrides.distance || currentUser.maxDistanceKm || 10,
+            hometown: overrides.hometown,
+            preferredDateVibe: overrides.preferredDateVibe,
+            slangBadges: overrides.slangBadges,
+            rashi: overrides.rashi,
+            smoking: overrides.smoking,
+            drinking: overrides.drinking,
+            workout: overrides.workout,
+            lookingFor: overrides.lookingFor,
+            interests: overrides.interests,
+            personality: overrides.personality,
+            isVerified: overrides.isVerified,
             cursor,
             limit: parseInt(limit)
         };
