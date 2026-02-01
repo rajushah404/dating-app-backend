@@ -55,6 +55,16 @@ router.patch('/update-profile', authenticate, validateUpdateProfile, asyncHandle
   const firebaseUid = req.user.uid;
   const updates = req.body;
 
+
+  // Auto-set interestedIn by default based on gender update
+  if (updates.gender && !updates.interestedIn) {
+    if (updates.gender === 'male') {
+      updates.interestedIn = ['female'];
+    } else if (updates.gender === 'female') {
+      updates.interestedIn = ['male'];
+    }
+  }
+
   // Update user
   const updatedUser = await User.findOneAndUpdate(
     { firebaseUid },

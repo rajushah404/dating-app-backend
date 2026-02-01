@@ -17,7 +17,7 @@ const validateUpdateProfile = (req, res, next) => {
     const errors = [];
 
     const allowedFields = [
-        "name", "age", "gender", "sexualOrientation", "interestedIn",
+        "name", "age", "gender", "interestedIn",
         "lookingFor", "lifestyle", "interests", "personality", "bio",
         "hometown", "preferredDateVibe", "slangBadges", "rashi",
         "photos", "voicePrompt", "location", "locationEnabled", "maxDistanceKm", "agePreference"
@@ -72,18 +72,7 @@ const validateUpdateProfile = (req, res, next) => {
         }
     }
 
-    if (updates.sexualOrientation !== undefined) {
-        if (!Array.isArray(updates.sexualOrientation)) {
-            errors.push('Sexual orientation must be an array');
-        } else {
-            const validOrientations = ["straight", "gay", "lesbian", "bisexual", "other"];
-            updates.sexualOrientation.forEach(orientation => {
-                if (!validOrientations.includes(orientation)) {
-                    errors.push(`Invalid sexual orientation: ${orientation}`);
-                }
-            });
-        }
-    }
+
 
     if (updates.interestedIn !== undefined) {
         if (!Array.isArray(updates.interestedIn) || updates.interestedIn.length < 1) {

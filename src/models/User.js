@@ -10,10 +10,7 @@ const userSchema = new mongoose.Schema({
   gender: { type: String, enum: ["male", "female", "other"] },
   age: { type: Number, min: 18, max: 50 },
 
-  sexualOrientation: {
-    type: [String],
-    enum: ["straight", "gay", "lesbian", "bisexual", "other"]
-  },
+
 
   interestedIn: {
     type: [String],
@@ -73,6 +70,16 @@ const userSchema = new mongoose.Schema({
   lastActiveAt: { type: Date }
 
 }, { timestamps: true });
+
+
+// Auto-set interestedIn based on gender (Default behavior)
+userSchema.pre('save', function () {
+  if (this.gender === 'male') {
+    this.interestedIn = ['female'];
+  } else if (this.gender === 'female') {
+    this.interestedIn = ['male'];
+  }
+});
 
 // Geo queries
 userSchema.index({ location: '2dsphere' });
