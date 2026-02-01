@@ -13,7 +13,7 @@ class ConnectionService {
     async sendRequest(fromUserId, toUserId, status) {
         // Self-request check
         if (fromUserId.toString() === toUserId.toString()) {
-            throw new BadRequestError('You cannot send a request to yourself');
+            throw new BadRequestError("Self-love is great, but we're here to find matches with others!");
         }
 
         // Target user existence check
@@ -58,7 +58,7 @@ class ConnectionService {
         // Duplicate request prevention (Only one active request between two users)
         const existingConnection = await connectionRepository.findBetweenUsers(fromUserId, toUserId);
         if (existingConnection) {
-            throw new ConflictError('A connection request already exists between these users');
+            throw new ConflictError("You've already interacted with this person! Check your matches or requests.");
         }
 
         const connection = await connectionRepository.create({
@@ -101,7 +101,7 @@ class ConnectionService {
 
         // Only the receiver can accept/reject
         if (connection.toUser.toString() !== receiverId.toString()) {
-            throw new ForbiddenError('You can only review requests sent to you');
+            throw new ForbiddenError("Something went wrong. You can only respond to requests sent to your profile.");
         }
 
         // Only interested can be reviewed
@@ -143,23 +143,26 @@ class ConnectionService {
     async getUserConnections(userId) {
         const connections = await connectionRepository.findUserConnections(userId);
 
-        // Format response to show the "Other User" for each connection
-        return connections.map(conn => {
-            const otherUser = conn.fromUser._id.toString() === userId.toString()
-                ? conn.toUser
-                : conn.fromUser;
+        // Format response and filter out deactivated users
+        return connections
+            .map(conn => {
+                const otherUser = conn.fromUser._id.toString() === userId.toString()
+                    ? conn.toUser
+                    : conn.fromUser;
 
-            return {
-                connectionId: conn._id,
-                user: {
-                    _id: otherUser._id,
-                    name: otherUser.name,
-                    photos: otherUser.photos,
-                    onlineStatus: isUserOnline(otherUser._id) ? 'ONLINE' : 'OFFLINE'
-                },
-                matchedAt: conn.updatedAt
-            };
-        });
+                return {
+                    connectionId: conn._id,
+                    user: {
+                        _id: otherUser._id,
+                        name: otherUser.name,
+                        photos: otherUser.photos,
+                        accountStatus: otherUser.accountStatus, // Useful for the UI
+                        onlineStatus: isUserOnline(otherUser._id) ? 'ONLINE' : 'OFFLINE'
+                    },
+                    matchedAt: conn.updatedAt
+                };
+            })
+            .filter(match => match.user.accountStatus === 'active');
     }
     async getIncomingRequests(userId) {
         const requests = await connectionRepository.findIncomingRequests(userId);
@@ -177,7 +180,7 @@ class ConnectionService {
 
     async blockUser(fromUserId, toUserId) {
         if (fromUserId.toString() === toUserId.toString()) {
-            throw new BadRequestError('You cannot block yourself');
+            throw new BadRequestError("You can't block yourself, but you can always take a break from the app.");
         }
 
         const connection = await connectionRepository.block(fromUserId, toUserId);

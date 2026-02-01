@@ -87,6 +87,8 @@ const userSchema = new mongoose.Schema({
     verifiedAt: { type: Date }
   },
 
+  accountStatus: { type: String, enum: ['active', 'deactivated'], default: 'active' },
+
   lastActiveAt: { type: Date }
 
 }, { timestamps: true });

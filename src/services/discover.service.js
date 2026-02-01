@@ -12,11 +12,11 @@ class DiscoverService {
         }
 
         if (!currentUser.profileCompleted) {
-            throw new AppError('Please complete your profile to use Discovery', 400);
+            throw new AppError("Your profile is almost ready! Please complete it to start discovering people.", 400);
         }
 
         if (!currentUser.location || !currentUser.location.coordinates) {
-            throw new AppError('Location is required for Discovery', 400);
+            throw new AppError("We need your location to find people nearby. Please enable it in your settings!", 400);
         }
 
         // 2. Build exclusion list (interacted users + self)

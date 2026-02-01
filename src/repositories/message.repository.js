@@ -28,6 +28,12 @@ class MessageRepository {
             .select('content createdAt sender')
             .lean();
     }
+
+    async deleteByUser(userId) {
+        return await Message.deleteMany({
+            $or: [{ sender: userId }, { receiver: userId }]
+        });
+    }
 }
 
 module.exports = new MessageRepository();

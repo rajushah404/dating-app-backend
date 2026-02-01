@@ -67,8 +67,8 @@ class ConnectionRepository {
                 { toUser: userId, status: 'accepted' }
             ]
         })
-            .populate('fromUser', '_id name photos')
-            .populate('toUser', '_id name photos')
+            .populate('fromUser', '_id name photos accountStatus')
+            .populate('toUser', '_id name photos accountStatus')
             .select('-__v')
             .lean();
     }
@@ -109,6 +109,12 @@ class ConnectionRepository {
         );
 
         return [...new Set(interactionIds)];
+    }
+
+    async deleteByUser(userId) {
+        return await Connection.deleteMany({
+            $or: [{ fromUser: userId }, { toUser: userId }]
+        });
     }
 }
 

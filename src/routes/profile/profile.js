@@ -147,4 +147,64 @@ router.post('/upload-voice-prompt', authenticate, upload.single('audio'), asyncH
   success(res, 'Voice prompt uploaded successfully', { voicePrompt: updatedUser.voicePrompt });
 }));
 
+/**
+ * @route PATCH /api/users/status
+ * @desc Deactivate or reactivate account
+ */
+router.patch('/status', authenticate, asyncHandler(async (req, res) => {
+  const { status } = req.body; // 'active' or 'deactivated'
+
+  if (!['active', 'deactivated'].includes(status)) {
+    throw new AppError('Invalid status. Use "active" or "deactivated".', 400);
+  }
+
+  const user = await User.findOneAndUpdate(
+    { firebaseUid: req.user.uid },
+    { $set: { accountStatus: status } },
+    { new: true }
+  ).select('accountStatus name');
+
+  const msg = status === 'deactivated'
+    ? "Account deactivated. You're now invisible to others, but your data is safe!"
+    : "Welcome back! Your account is now active again.";
+
+  success(res, msg, user);
+}));
+
+/**
+ * @route DELETE /api/users/delete-account
+ * @desc Permanently delete account and all related data
+ */
+const connectionRepository = require('../../repositories/connection.repository');
+const messageRepository = require('../../repositories/message.repository');
+const admin = require('firebase-admin');
+
+router.delete('/delete-account', authenticate, asyncHandler(async (req, res) => {
+  const user = await User.findOne({ firebaseUid: req.user.uid });
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  const userId = user._id;
+
+  // 1. Delete all connections
+  await connectionRepository.deleteByUser(userId);
+
+  // 2. Delete all messages
+  await messageRepository.deleteByUser(userId);
+
+  // 3. Delete from MongoDB
+  await User.findByIdAndDelete(userId);
+
+  // 4. Delete from Firebase Auth (Optional but recommended)
+  try {
+    await admin.auth().deleteUser(req.user.uid);
+  } catch (error) {
+    console.error('Firebase user deletion failed:', error.message);
+    // Continue even if Firebase fails, as the local data is already gone
+  }
+
+  success(res, "Account and all data have been permanently deleted. We're sad to see you go!");
+}));
+
 module.exports = router;

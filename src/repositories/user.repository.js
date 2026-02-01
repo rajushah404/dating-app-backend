@@ -36,6 +36,7 @@ class UserRepository {
         const query = {
             _id: { $nin: exclusionList },
             profileCompleted: true,
+            accountStatus: 'active',
             gender: { $in: genderPreference },
             age: { $gte: ageMin, $lte: ageMax },
             locationEnabled: true,
@@ -99,7 +100,7 @@ class UserRepository {
     }
     async findPublicProfileById(id) {
         return await User.findById(id)
-            .select('-email -firebaseUid -__v -updatedAt')
+            .select('-email -firebaseUid -__v -updatedAt -verification.selfieUrl -usage')
             .lean();
     }
 }

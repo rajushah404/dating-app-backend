@@ -28,6 +28,8 @@ authRouter.post('/auth', validateAuth, asyncHandler(async (req, res) => {
 
   // Check if user exists, if not, create
   let user = await User.findOne({ firebaseUid });
+  let wasDeactivated = false;
+
   if (!user) {
     user = new User({
       firebaseUid,
@@ -35,14 +37,21 @@ authRouter.post('/auth', validateAuth, asyncHandler(async (req, res) => {
     });
     await user.save();
     console.log('New user created:', user);
+  } else if (user.accountStatus === 'deactivated') {
+    // Automatically reactivate user on login
+    user.accountStatus = 'active';
+    await user.save();
+    wasDeactivated = true;
+    console.log(`User ${user.name} reactivated upon login`);
   }
 
   // Respond with success
-  success(res, 'Authentication successful', {
+  success(res, wasDeactivated ? 'Welcome back! Your account has been reactivated.' : 'Authentication successful', {
     id: user._id,
     firebaseUid: user.firebaseUid,
     email: user.email,
     profileCompleted: user.profileCompleted,
+    accountStatus: user.accountStatus,
   });
 }));
 

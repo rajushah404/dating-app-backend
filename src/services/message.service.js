@@ -3,6 +3,7 @@ const connectionRepository = require('../repositories/connection.repository');
 const User = require('../models/User');
 const { getIO } = require('../utils/socket');
 const notificationService = require('./notification.service');
+const AppError = require('../utils/AppError');
 const { encrypt, decrypt } = require('../utils/encryption');
 
 class MessageService {
@@ -11,7 +12,7 @@ class MessageService {
         const connection = await connectionRepository.findBetweenUsers(senderId, receiverId);
 
         if (!connection || connection.status !== 'accepted') {
-            throw new AppError('You can only message users you have matched with.', 403);
+            throw new AppError("It's not a match yet! You can start chatting once you both like each other.", 403);
         }
 
         // 2. Encrypt and save message to database
@@ -46,7 +47,7 @@ class MessageService {
         const connection = await connectionRepository.findBetweenUsers(currentUserId, otherUserId);
 
         if (!connection || connection.status !== 'accepted') {
-            throw new AppError('No match found between users.', 404);
+            throw new AppError("We couldn't find a match for this chat. Keep swiping to find new connections!", 404);
         }
 
         const messages = await messageRepository.getChatHistory(connection._id, limit, offset);
