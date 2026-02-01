@@ -40,7 +40,10 @@ class MessageService {
         // Firebase notifications are disabled globally.
 
 
-        return message;
+        // Return message with decrypted content to the sender
+        const responseData = message.toObject();
+        responseData.content = content; // content is the original plain text
+        return responseData;
     }
 
     async getChatHistory(currentUserId, otherUserId, limit, offset) {
