@@ -23,6 +23,37 @@ class ConnectionService {
         }
 
         const currentUser = await User.findById(fromUserId);
+        if (!currentUser) {
+            throw new NotFoundError('Current user not found');
+        }
+
+        // --- DAILY LIKE LIMIT LOGIC ---
+        if (status === 'interested' && (!currentUser.subscription || currentUser.subscription.plan === 'free')) {
+            const now = new Date();
+            const lastReset = currentUser.usage?.lastLikeReset || new Date(0);
+
+            // Check if it's a new day (UTC based)
+            const isNewDay = now.getUTCFullYear() !== lastReset.getUTCFullYear() ||
+                now.getUTCMonth() !== lastReset.getUTCMonth() ||
+                now.getUTCDate() !== lastReset.getUTCDate();
+
+            if (isNewDay) {
+                // Reset count for a new day
+                currentUser.usage = {
+                    dailyLikeCount: 1,
+                    lastLikeReset: now
+                };
+            } else {
+                // Check if limit reached
+                if (currentUser.usage.dailyLikeCount >= 20) {
+                    throw new ForbiddenError('Daily like limit reached (20/day). Upgrade for unlimited likes!');
+                }
+                // Increment count
+                currentUser.usage.dailyLikeCount += 1;
+            }
+            await currentUser.save();
+        }
+        // --- END LIMIT LOGIC ---
 
         // Duplicate request prevention (Only one active request between two users)
         const existingConnection = await connectionRepository.findBetweenUsers(fromUserId, toUserId);

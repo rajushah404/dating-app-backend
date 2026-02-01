@@ -67,6 +67,19 @@ const userSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   profileCompleted: { type: Boolean, default: false },
 
+  subscription: {
+    plan: { type: String, enum: ['free', 'gold', 'platinum'], default: 'free' },
+    status: { type: String, enum: ['active', 'expired', 'cancelled'], default: 'active' },
+    expiryDate: { type: Date },
+    paymentProvider: { type: String }, // 'google_play', 'apple_pay', 'esewa', 'khalti'
+    subscriptionId: { type: String }
+  },
+
+  usage: {
+    dailyLikeCount: { type: Number, default: 0 },
+    lastLikeReset: { type: Date, default: Date.now }
+  },
+
   lastActiveAt: { type: Date }
 
 }, { timestamps: true });
