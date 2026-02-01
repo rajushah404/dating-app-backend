@@ -34,6 +34,10 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Set security HTTP headers
+const helmet = require('helmet');
+app.use(helmet());
+
 // Global Rate Limiter
 app.use('/api', generalLimiter);
 
