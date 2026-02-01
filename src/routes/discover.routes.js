@@ -23,7 +23,7 @@ const getDbUser = async (firebaseUid) => {
  */
 router.get('/', authenticate, asyncHandler(async (req, res) => {
     const dbUser = await getDbUser(req.user.uid);
-    const { cursor, limit, gender, ageMin, ageMax, distance, hometown, preferredDateVibe, slangBadges, rashi, smoking, drinking, workout, lookingFor, interests, personality } = req.query;
+    const { cursor, limit, gender, ageMin, ageMax, distance, hometown, preferredDateVibe, slangBadges, rashi, smoking, drinking, workout, lookingFor, interests, personality, isVerified } = req.query;
 
     const overrides = {
         gender: gender ? gender.split(',') : null,
