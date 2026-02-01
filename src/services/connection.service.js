@@ -181,6 +181,17 @@ class ConnectionService {
         }
 
         const connection = await connectionRepository.block(fromUserId, toUserId);
+
+        // --- REAL-TIME BLOCK NOTIFICATION ---
+        try {
+            const io = getIO();
+            // Emit to both users to ensure their UIs refresh and remove each other
+            io.to(fromUserId.toString()).emit('USER_BLOCKED', { blockedUserId: toUserId });
+            io.to(toUserId.toString()).emit('USER_BLOCKED', { blockedUserId: fromUserId });
+        } catch (error) {
+            console.error('Socket notification failed for block:', error.message);
+        }
+
         return connection;
     }
 }
