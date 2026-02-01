@@ -80,6 +80,13 @@ const userSchema = new mongoose.Schema({
     lastLikeReset: { type: Date, default: Date.now }
   },
 
+  verification: {
+    status: { type: String, enum: ['none', 'pending', 'verified', 'rejected'], default: 'none' },
+    selfieUrl: { type: String },
+    submittedAt: { type: Date },
+    verifiedAt: { type: Date }
+  },
+
   lastActiveAt: { type: Date }
 
 }, { timestamps: true });

@@ -10,6 +10,8 @@ const discoverRoutes = require('./src/routes/discover.routes');
 const messageRoutes = require('./src/routes/message.routes');
 const metaRoutes = require('./src/routes/meta.routes');
 const safetyRoutes = require('./src/routes/safety.routes');
+const legalRoutes = require('./src/routes/legal.routes');
+const verificationRoutes = require('./src/routes/verification.routes');
 
 const errorHandler = require('./src/middlewares/errorHandler');
 const { success } = require('./src/utils/response');
@@ -45,6 +47,8 @@ app.use('/api/discover', discoverRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/meta', metaRoutes);
 app.use('/api/safety', reportLimiter, safetyRoutes);
+app.use('/api/legal', legalRoutes);
+app.use('/api/verify', verificationRoutes);
 
 app.use('/', authLimiter, authRoutes);
 
