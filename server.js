@@ -31,8 +31,9 @@ const { generalLimiter, authLimiter, reportLimiter } = require('./src/middleware
 
 const app = express();
 
-// Middleware to parse JSON bodies
+// Middleware to parse JSON and URL-encoded bodies
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Set security HTTP headers
 const helmet = require('helmet');

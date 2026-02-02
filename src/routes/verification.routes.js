@@ -66,10 +66,14 @@ router.get('/status', authenticate, asyncHandler(async (req, res) => {
  */
 router.patch('/admin/review/:userId', authenticate, asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    const { status } = req.body; // 'verified' or 'rejected'
+    const { status } = req.body || {};
+
+    if (!status) {
+        throw new AppError('Status is required in request body', 400);
+    }
 
     if (!['verified', 'rejected'].includes(status)) {
-        throw new AppError('Invalid status', 400);
+        throw new AppError('Invalid status. Must be "verified" or "rejected"', 400);
     }
 
     const user = await User.findById(userId);
