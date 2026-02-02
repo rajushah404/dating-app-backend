@@ -165,8 +165,72 @@ class ConnectionService {
             .filter(match => match.user.accountStatus === 'active');
     }
     async getIncomingRequests(userId) {
-        const requests = await connectionRepository.findIncomingRequests(userId);
+        const currentUser = await User.findById(userId);
+        if (!currentUser) {
+            throw new NotFoundError('User not found');
+        }
 
+        const allIncomingRequests = await connectionRepository.findIncomingRequests(userId);
+        const totalCount = allIncomingRequests.length;
+
+        // Premium users can see all requests
+        if (currentUser.subscription && currentUser.subscription.plan !== 'free') {
+            return {
+                requests: this._formatRequests(allIncomingRequests),
+                totalCount
+            };
+        }
+
+        // --- FREE USER LIMIT LOGIC (4 reveals per day) ---
+        const now = new Date();
+        const lastReset = currentUser.usage?.lastRevealedReset || new Date(0);
+
+        // Check if it's a new day
+        const isNewDay = now.getUTCFullYear() !== lastReset.getUTCFullYear() ||
+            now.getUTCMonth() !== lastReset.getUTCMonth() ||
+            now.getUTCDate() !== lastReset.getUTCDate();
+
+        if (isNewDay) {
+            currentUser.usage.dailyRevealedLikes = [];
+            currentUser.usage.lastRevealedReset = now;
+        }
+
+        // IDs of requests that are currently pending AND were already revealed today (or previously if not acting)
+        let revealedIds = currentUser.usage.dailyRevealedLikes.map(id => id.toString());
+
+        // Filter sub-set of current pending requests that were already "revealed"
+        let alreadyRevealedPending = allIncomingRequests.filter(req =>
+            revealedIds.includes(req._id.toString())
+        );
+
+        // If we haven't reached the limit of 4 revealed ones yet, reveal more from the "hidden" pending pool
+        if (alreadyRevealedPending.length < 4) {
+            const hiddenPending = allIncomingRequests.filter(req =>
+                !revealedIds.includes(req._id.toString())
+            );
+
+            const spaceLeft = 4 - alreadyRevealedPending.length;
+            const toReveal = hiddenPending.slice(0, spaceLeft);
+
+            toReveal.forEach(req => {
+                currentUser.usage.dailyRevealedLikes.push(req._id);
+            });
+
+            if (toReveal.length > 0) {
+                await currentUser.save();
+            }
+
+            alreadyRevealedPending = [...alreadyRevealedPending, ...toReveal];
+        }
+
+        return {
+            requests: this._formatRequests(alreadyRevealedPending),
+            totalCount
+        };
+    }
+
+    // Helper to format request objects for consistent response
+    _formatRequests(requests) {
         return requests.map(req => ({
             requestId: req._id,
             user: {
