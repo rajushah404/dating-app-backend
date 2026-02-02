@@ -2,6 +2,7 @@ const connectionRepository = require('../repositories/connection.repository');
 const User = require('../models/User');
 const { getIO, isUserOnline } = require('../utils/socket');
 const notificationService = require('./notification.service');
+const appConfigService = require('./appConfig.service');
 const {
     BadRequestError,
     NotFoundError,
@@ -27,8 +28,12 @@ class ConnectionService {
             throw new NotFoundError('Current user not found');
         }
 
+
         // --- DAILY LIKE LIMIT LOGIC ---
         if (status === 'interested' && (!currentUser.subscription || currentUser.subscription.plan === 'free')) {
+            // Get dynamic limit from config
+            const dailySendLimit = await appConfigService.getLimit('dailySendLimit');
+
             const now = new Date();
             const lastReset = currentUser.usage?.lastLikeReset || new Date(0);
 
@@ -45,8 +50,8 @@ class ConnectionService {
                 };
             } else {
                 // Check if limit reached
-                if (currentUser.usage.dailyLikeCount >= 20) {
-                    throw new ForbiddenError('Daily like limit reached (20/day). Upgrade for unlimited likes!');
+                if (currentUser.usage.dailyLikeCount >= dailySendLimit) {
+                    throw new ForbiddenError(`Daily like limit reached (${dailySendLimit}/day). Upgrade for unlimited likes!`);
                 }
                 // Increment count
                 currentUser.usage.dailyLikeCount += 1;
@@ -200,7 +205,11 @@ class ConnectionService {
             };
         }
 
-        // --- FREE USER LIMIT LOGIC (1 reveal per day) ---
+        // Get dynamic limits from config
+        const dailyRevealLimit = await appConfigService.getLimit('dailyRevealLimit');
+        const dailyReviewLimit = await appConfigService.getLimit('dailyReviewLimit');
+
+        // --- FREE USER LIMIT LOGIC (Dynamic limits from admin config) ---
         const now = new Date();
         const lastRevealReset = currentUser.usage?.lastRevealedReset || new Date(0);
         const lastReviewReset = currentUser.usage?.lastReviewReset || new Date(0);
@@ -237,7 +246,7 @@ class ConnectionService {
         );
 
         // --- STRICT ENFORCEMENT: If user has already reviewed their daily limit, don't reveal new requests ---
-        if (reviewCount >= 1) {
+        if (reviewCount >= dailyReviewLimit) {
             // User has already reviewed their daily limit
             // Only show requests that are still pending AND were already revealed
             return {
@@ -246,13 +255,13 @@ class ConnectionService {
             };
         }
 
-        // If we haven't reached the limit of 1 revealed one yet, reveal more from the "hidden" pending pool
-        if (alreadyRevealedPending.length < 1) {
+        // If we haven't reached the reveal limit yet, reveal more from the "hidden" pending pool
+        if (alreadyRevealedPending.length < dailyRevealLimit) {
             const hiddenPending = allIncomingRequests.filter(req =>
                 !revealedIds.includes(req._id.toString())
             );
 
-            const spaceLeft = 1 - alreadyRevealedPending.length;
+            const spaceLeft = dailyRevealLimit - alreadyRevealedPending.length;
             const toReveal = hiddenPending.slice(0, spaceLeft);
 
             toReveal.forEach(req => {

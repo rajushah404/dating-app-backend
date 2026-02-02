@@ -12,6 +12,7 @@ const metaRoutes = require('./src/routes/meta.routes');
 const safetyRoutes = require('./src/routes/safety.routes');
 const legalRoutes = require('./src/routes/legal.routes');
 const verificationRoutes = require('./src/routes/verification.routes');
+const adminRoutes = require('./src/routes/admin/admin.routes');
 
 const errorHandler = require('./src/middlewares/errorHandler');
 const { success } = require('./src/utils/response');
@@ -45,6 +46,10 @@ app.use('/api', generalLimiter);
 // Connect to the database
 connectDB();
 
+// Initialize default app configuration
+const { initializeDefaultConfig } = require('./src/scripts/initConfig');
+initializeDefaultConfig();
+
 // Use the routes
 app.use('/api/users', profileRoutes);
 app.use('/api/connections', connectionRoutes);
@@ -54,6 +59,7 @@ app.use('/api/meta', metaRoutes);
 app.use('/api/safety', reportLimiter, safetyRoutes);
 app.use('/api/legal', legalRoutes);
 app.use('/api/verify', verificationRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use('/', authLimiter, authRoutes);
 
