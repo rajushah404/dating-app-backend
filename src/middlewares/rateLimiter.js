@@ -15,7 +15,7 @@ const generalLimiter = rateLimit({
 // Stricter limiter for Auth routes (Login, Register)
 const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    limit: 10, // Limit each IP to 10 requests per hour
+    limit: 100, // Limit each IP to 100 requests per hour (increased from 10)
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: {

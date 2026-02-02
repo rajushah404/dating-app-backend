@@ -1,8 +1,8 @@
-const admin = require('firebase-admin');
+const { verifyToken } = require('../utils/jwt');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 
-// Middleware to authenticate requests using Firebase ID token
+// Middleware to authenticate requests using Custom JWT
 const authenticate = asyncHandler(async (req, res, next) => {
     // Extract the Authorization header
     const authHeader = req.headers.authorization;
@@ -13,20 +13,20 @@ const authenticate = asyncHandler(async (req, res, next) => {
     }
 
     // Extract the token from the header
-    const idToken = authHeader.split('Bearer ')[1];
+    const token = authHeader.split('Bearer ')[1];
 
     try {
-        // Verify the Firebase ID token
-        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        // Verify the Custom JWT locally (Fast, no network call)
+        const decoded = verifyToken(token);
 
         // Attach the decoded token (containing user info) to the request object
-        req.user = decodedToken;
+        // Note: decoded contains { uid, id, email }
+        req.user = decoded;
 
         // Proceed to the next middleware or route handler
         next();
     } catch (error) {
-        console.error('Error verifying Firebase ID token:', error);
-        // Standardize Firebase auth errors as requested
+        console.error('Error verifying Custom JWT:', error);
         throw new AppError('Invalid or expired authentication token', 401);
     }
 });

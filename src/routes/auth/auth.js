@@ -5,6 +5,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { success } = require('../../utils/response');
 const { validateAuth } = require('../../validators/auth.validator');
 const AppError = require('../../utils/AppError');
+const { signToken } = require('../../utils/jwt');
 
 const authRouter = express.Router();
 
@@ -45,13 +46,24 @@ authRouter.post('/auth', validateAuth, asyncHandler(async (req, res) => {
     console.log(`User ${user.name} reactivated upon login`);
   }
 
+  // Create custom JWT for our app (long-lived)
+  const token = signToken({
+    uid: user.firebaseUid,
+    id: user._id,
+    email: user.email,
+    name: user.name
+  });
+
   // Respond with success
   success(res, wasDeactivated ? 'Welcome back! Your account has been reactivated.' : 'Authentication successful', {
-    id: user._id,
-    firebaseUid: user.firebaseUid,
-    email: user.email,
-    profileCompleted: user.profileCompleted,
-    accountStatus: user.accountStatus,
+    token, // The new long-lived token
+    user: {
+      id: user._id,
+      firebaseUid: user.firebaseUid,
+      email: user.email,
+      profileCompleted: user.profileCompleted,
+      accountStatus: user.accountStatus,
+    }
   });
 }));
 
