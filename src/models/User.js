@@ -79,7 +79,9 @@ const userSchema = new mongoose.Schema({
     dailyLikeCount: { type: Number, default: 0 },
     lastLikeReset: { type: Date, default: Date.now },
     dailyRevealedLikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Connection' }],
-    lastRevealedReset: { type: Date, default: Date.now }
+    lastRevealedReset: { type: Date, default: Date.now },
+    dailyReviewCount: { type: Number, default: 0 },
+    lastReviewReset: { type: Date, default: Date.now }
   },
 
   verification: {

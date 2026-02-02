@@ -109,6 +109,26 @@ class ConnectionService {
             throw new BadRequestError(`This request has already been ${connection.status} and cannot be reviewed again`);
         }
 
+        // --- TRACK REVIEW COUNT FOR FREE USERS ---
+        const receiverUser = await User.findById(receiverId);
+        if (receiverUser && (!receiverUser.subscription || receiverUser.subscription.plan === 'free')) {
+            const now = new Date();
+            const lastReset = receiverUser.usage?.lastReviewReset || new Date(0);
+
+            // Check if it's a new day
+            const isNewDay = now.getUTCFullYear() !== lastReset.getUTCFullYear() ||
+                now.getUTCMonth() !== lastReset.getUTCMonth() ||
+                now.getUTCDate() !== lastReset.getUTCDate();
+
+            if (isNewDay) {
+                receiverUser.usage.dailyReviewCount = 1;
+                receiverUser.usage.lastReviewReset = now;
+            } else {
+                receiverUser.usage.dailyReviewCount = (receiverUser.usage.dailyReviewCount || 0) + 1;
+            }
+            await receiverUser.save();
+        }
+
         // Update status
         const updatedConnection = await connectionRepository.updateStatus(requestId, status);
 
@@ -116,7 +136,6 @@ class ConnectionService {
         if (status === 'accepted') {
             try {
                 const io = getIO();
-                const receiverUser = await User.findById(receiverId);
 
                 // Notify the person who SENT the original request that it was accepted
                 io.to(connection.fromUser.toString()).emit('MATCH_ACCEPTED', {
@@ -181,21 +200,35 @@ class ConnectionService {
             };
         }
 
-        // --- FREE USER LIMIT LOGIC (4 reveals per day) ---
+        // --- FREE USER LIMIT LOGIC (1 reveal per day) ---
         const now = new Date();
-        const lastReset = currentUser.usage?.lastRevealedReset || new Date(0);
+        const lastRevealReset = currentUser.usage?.lastRevealedReset || new Date(0);
+        const lastReviewReset = currentUser.usage?.lastReviewReset || new Date(0);
 
-        // Check if it's a new day
-        const isNewDay = now.getUTCFullYear() !== lastReset.getUTCFullYear() ||
-            now.getUTCMonth() !== lastReset.getUTCMonth() ||
-            now.getUTCDate() !== lastReset.getUTCDate();
+        // Check if it's a new day for reveals
+        const isNewDayReveal = now.getUTCFullYear() !== lastRevealReset.getUTCFullYear() ||
+            now.getUTCMonth() !== lastRevealReset.getUTCMonth() ||
+            now.getUTCDate() !== lastRevealReset.getUTCDate();
 
-        if (isNewDay) {
+        // Check if it's a new day for reviews
+        const isNewDayReview = now.getUTCFullYear() !== lastReviewReset.getUTCFullYear() ||
+            now.getUTCMonth() !== lastReviewReset.getUTCMonth() ||
+            now.getUTCDate() !== lastReviewReset.getUTCDate();
+
+        if (isNewDayReveal) {
             currentUser.usage.dailyRevealedLikes = [];
             currentUser.usage.lastRevealedReset = now;
         }
 
-        // IDs of requests that are currently pending AND were already revealed today (or previously if not acting)
+        if (isNewDayReview) {
+            currentUser.usage.dailyReviewCount = 0;
+            currentUser.usage.lastReviewReset = now;
+        }
+
+        // Get current review count
+        const reviewCount = currentUser.usage?.dailyReviewCount || 0;
+
+        // IDs of requests that are currently pending AND were already revealed
         let revealedIds = currentUser.usage.dailyRevealedLikes.map(id => id.toString());
 
         // Filter sub-set of current pending requests that were already "revealed"
@@ -203,13 +236,23 @@ class ConnectionService {
             revealedIds.includes(req._id.toString())
         );
 
-        // If we haven't reached the limit of 4 revealed ones yet, reveal more from the "hidden" pending pool
-        if (alreadyRevealedPending.length < 4) {
+        // --- STRICT ENFORCEMENT: If user has already reviewed their daily limit, don't reveal new requests ---
+        if (reviewCount >= 1) {
+            // User has already reviewed their daily limit
+            // Only show requests that are still pending AND were already revealed
+            return {
+                requests: this._formatRequests(alreadyRevealedPending),
+                totalCount
+            };
+        }
+
+        // If we haven't reached the limit of 1 revealed one yet, reveal more from the "hidden" pending pool
+        if (alreadyRevealedPending.length < 1) {
             const hiddenPending = allIncomingRequests.filter(req =>
                 !revealedIds.includes(req._id.toString())
             );
 
-            const spaceLeft = 4 - alreadyRevealedPending.length;
+            const spaceLeft = 1 - alreadyRevealedPending.length;
             const toReveal = hiddenPending.slice(0, spaceLeft);
 
             toReveal.forEach(req => {
