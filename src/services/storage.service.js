@@ -41,6 +41,49 @@ const uploadFileToFirebase = async (file, folder = 'uploads') => {
     });
 };
 
+/**
+ * Deletes a file from Firebase Storage
+ * @param {string} publicUrl - The public URL of the file to delete
+ */
+const deleteFileFromFirebase = async (publicUrl) => {
+    if (!publicUrl) return;
+
+    try {
+        const bucket = admin.storage().bucket();
+
+        // Extract the file path from the URL
+        // URL format: https://storage.googleapis.com/<bucket-name>/<file-path>
+        // We need to decodeURIComponent because the URL might have encoded characters (like spaces or slashes)
+        // Split by the bucket name to get the path
+        const bucketName = bucket.name;
+
+        if (!publicUrl.includes(bucketName)) {
+            console.warn(`File does not belong to this bucket (${bucketName}): ${publicUrl}`);
+            return;
+        }
+
+        const pathPart = publicUrl.split(`${bucketName}/`)[1];
+        if (!pathPart) {
+            console.warn(`Could not extract file path from URL: ${publicUrl}`);
+            return;
+        }
+
+        const filePath = decodeURIComponent(pathPart);
+        await bucket.file(filePath).delete();
+        console.log(`Successfully deleted file from Firebase: ${filePath}`);
+
+    } catch (error) {
+        // If file not found, we can consider it "deleted" or just log a warning
+        if (error.code === 404) {
+            console.warn(`File not found in Firebase (already deleted?): ${publicUrl}`);
+        } else {
+            console.error(`Error deleting file from Firebase: ${error.message}`);
+            throw error;
+        }
+    }
+};
+
 module.exports = {
     uploadFileToFirebase,
+    deleteFileFromFirebase
 };

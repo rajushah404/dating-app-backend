@@ -1,164 +1,154 @@
 /**
- * Hyper-local interests tailored for Nepali youths.
+ * Curated interests and vibes for the modern Nepali dating scene.
+ * Focus: Gen Z/Millennial appeal, authentic local culture, and specific hobbies.
  */
+
+// 1. INTERESTS - Categorized for easy selection UI (if needed later), but flat list for now.
 const NEPALI_INTERESTS = [
-    // Food & Drink
-    "Momo Lover", "Chiya Guff", "Newari Bhoj", "Thakali Hunter",
-    "Laphing Addict", "Pani Puri Queen", "Street Foodie", "BBQ Night",
-    "Dhido Lover", "Sukuti Fan", "Choila Specialist",
+    // 🍔 Foodie Culture
+    "Momo Connoisseur", "Chiya Addict", "Laphing Lover", "Newari Bhoj Fan",
+    "Thakali Hunter", "Cafe Hopping", "Street Food", "Pizza is Life",
+    "Cooking/Baking", "Cocktail Mixing", "Vegetarian", "Vegan",
 
-    // Adventure & Travel
-    "Hiking Shivapuri", "Nagarkot Sunrise", "Mustang Trail", "Pokhara Lakes",
-    "Gosaikunda Trek", "Chandragiri Cable Car", "Solo Traveler", "Rider (Bullet/Crossfire)",
-    "Paragliding", "Bungee Jumper", "Highway Trips", "Off-roading",
+    // ✈️ Adventure & Outdoors
+    "Weekend Hiking", "Ride to Nagarkot", "Mustang Dreamer", "Trekking",
+    "Camping", "Paragliding", "Off-roading", "Bungee Jumping",
+    "Road Trips", "Solo Traveling",
 
-    // Urban Life & Hangouts
-    "Thamel Nightlife", "Jhamsikhel Cafes", "Durbar Square Walk", "Chobhar Hill",
-    "Taudaha Lake", "Rooftop Vibes", "Basantapur Guff", "Patan Art",
+    // 🎨 Arts & Creativity
+    "Photography", "Videography/Reels", "Guitar/Jamming", "Sketching",
+    "Writing Poetry", "Stand-up Comedy", "Pottery", "Thrifting",
+    "Tattoo/Piercing", "DIY Crafts",
 
-    // Career & Academic
-    "Lok Sewa Taiyari", "Engineering Struggle", "Medical Life", "IT Geek",
-    "Digital Nomad", "Content Creator", "Freelancer", "Entrepreneur",
-    "BBS/BBA Squad", "Abroad Studies (IELTS/PTE)",
+    // 🍿 Entertainment
+    "Anime Weeb", "K-Drama Binge", "Netflix & Chill", "Gaming (PUBG/Valo)",
+    "Futsal Maniac", "Cricket Crazed", "Techno/Rave", "Live Gigs",
+    "Reading/Books", "Podcast Listener", "Horror Movies",
 
-    // Entertainment & Hobbies
-    "K-Pop Fan", "Anime Lover", "Nepali Rock", "Folk Melodies",
-    "Netflix Binge", "Gamer (PUBG/Free Fire)", "Futsal Player", "Cricket Fan (Team Nepal)",
-    "Guitarist", "Poetry", "Photography", "Sketching", "Tiktok Maker",
+    // 💼 Grind & ambition
+    "Startup Life", "Crypto/Stocks", "Medical Student", "Engineer's Pain",
+    "Freelancing", "Content Creation", "Lok Sewa Warrior", "Abroad Study Plans",
 
-    // Lifestyle & Vibe
-    "Early Bird", "Night Owl", "Gym Rat", "Yoga & Meditation",
-    "Dog Parent", "Cat Lover", "Tea over Coffee", "Spirituality",
-    "Fashionista", "Vintage Lover", "Traditional Wear", "Saree Lover"
+    // 🧘 Lifestyle
+    "Yoga/Meditation", "Gym Rat", "Early Riser", "Night Owl",
+    "Plant Parent", "Cat Person", "Dog Person", "Spiritual",
+    "Fashion/Styling", "Sneakerhead"
 ];
 
+// 2. PERSONALITIES - Self-description tags
 const NEPALI_PERSONALITIES = [
-    "Guffadi (Social Bee)", "Sojho (Simple & Kind)", "Batho (Sharp & Clever)",
-    "Bindaas (Carefree)", "Ramitey (Crowd Lover)", "Ali Risaha (Short Tempered 🌶️)",
-    "Nakhre (Drama Queen/King)", "Maya Lagne (Lovable)", "Khausi (Always Smiling)",
-    "Shanta (Calm Soul)", "Hataray (Always in a Hurry)", "Emotional",
-    "Sarcastic King/Queen", "Workaholic", "Family First", "Foodie Personality",
-    "Bhitrey (Introvert)", "Bahirey (Extrovert)", "Ambivert", "Adventure Junkie",
-    "Creative Mind", "Sanskari", "Modern Vibe", "Wanderlust", "Fitness Freak"
+    "Social Butterfly 🦋", "Introvert (Bhitrey) 🐢", "Ambivert 🌟",
+    "Sarcastic 🙃", "Golden Retriever Energy 🐶", "Black Cat Energy 🐈‍⬛",
+    "Adventurous (Ghumante) 🏔️", "Chill / Laid back 😌", "Workaholic 💼",
+    "Emotional (Bhavuk) 🥺", "Foodie (Khanchuwa) 🥟", "Straightforward 🎯",
+    "Hopeless Romantic 🌹", "Logical Thinker 🧠", "Creative Soul 🎨",
+    "Fitness Freak 💪", "Party Animal 🕺", "Homebody 🏠",
+    "Guffadi (Storyteller) 🗣️", "Good Listener 👂"
 ];
 
+// 3. VOICE PROMPTS - Conversation starters
 const NEPALI_VOICE_PROMPTS = [
-    "Mero favourite Momo place and why?",
-    "Chiya sanga malai sabai bhanda dherai k khana mann lagcha?",
-    "Mero perfect Saturday kasto huncha bhane...",
-    "Malai sabai bhanda dherai ris uthne kura k ho bhane...",
-    "Mero life ko sabai bhanda 'Bindaas' moment...",
-    "Mero dream date destination is...",
-    "What am I looking for in a partner? (Honestly)",
-    "If I were a character in a Nepali movie, I would be...",
-    "Mero sabai bhanda baiguney (weird) bani k ho bhane...",
-    "Lok Sewa ki Abroad Studies? Mero bichar k cha bhane...",
-    "Malai euta gana gauna mann lagyo... (Sing 2 lines!)",
-    "Hiking jada malai sabai bhanda k garna mann lagcha?",
-    "Mero dream proposal location in Nepal?",
-    "Malai sabai bhanda dherai 'Overthink' garaune kura k ho?",
-    "If I could change one thing about Kathmandu, it would be...",
-    "Mero guilty pleasure Nepali song (don't judge me!)",
-    "Street food ki Fine dining? My honest choice...",
-    "Aama le 'K bhako esto?' bhannu hune mero euta bani...",
-    "Mero favourite 'Chiya Guff' topic?",
-    "Travel garda malai 'Window seat' nai kinna parcha bhane...",
-    "Night life in Thamel or Peace in Mustang? Choose for me!",
-    "Mero sabai bhanda 'Desi' trait k ho?",
-    "If I won a lottery, first thing I would buy in Nepal is...",
-    "Patan ko galli ki Bhaktapur ko Durbar Square? Where should we go?",
-    "Malai sabai bhanda dherai 'Peace' dine thau Nepal ma...",
-    "My honest reaction to 'Bihe kahile garne?' question..."
+    "My controversial Momo opinion is...",
+    "Best spot for Chiya in Kathmandu is...",
+    "A song that lives in my head rent-free...",
+    "If we date, you must accept that I...",
+    "My typical Saturday looks like...",
+    "The way to my heart is through...",
+    "I'm weirdly attracted to...",
+    "My biggest 'Nepalese Parent' trauma is...",
+    "Pick one: Thamel Saturday night or Bouddha serenity?",
+    "My hidden talent (that is useless) is...",
+    "A travel destination on my bucket list...",
+    "My favorite Nepali slang word is...",
+    "Never have I ever...",
+    "The best advice I ever got...",
+    "I challenge you to a game of...",
+    "My go-to comfort food is...",
+    "Green flag in a partner for me is...",
+    "One thing I can't live without...",
+    "If I could trade lives with a Nepali celeb, it would be...",
+    "My idea of a perfect first date is..."
 ];
 
+// 4. LOOKING FOR - Relationship goals
 const NEPALI_LOOKING_FOR = [
-    "Serious Relationship (Bihe ko setting)",
-    "Chiya Date Buddy",
-    "Bindaas Dating",
-    "Traveling Partner (Ghumante)",
-    "Just Guff-gaff for now",
-    "Long-term relationship",
-    "Short-term relationship",
-    "Marriage",
-    "Not sure"
+    "Serious Relationship (Bihe maybe?) 💍",
+    "Casual Dating (Let's Vibe) 🥂",
+    "New Friends (Chiya Guff) ☕",
+    "Travel Buddy (Ghumgham) 🎒",
+    "Short-term Fun 🎉",
+    "Long-term Partner ❤️",
+    "Still Figuring It Out 🤷",
+    "Marriage (Direct Kura) 💒"
 ];
 
+// 5. LIFESTYLE - Smoking
 const NEPALI_SMOKING = [
-    "Anti-smoke Zone",
-    "Hookah / Shisha Lover",
-    "Occasionally (Party vibes only)",
+    "Social Smoker",
     "Regular Smoker",
-    "Non-smoker"
+    "Trying to Quit",
+    "Non-smoker",
+    "Shisha / Hookah Only",
+    "420 Friendly 🍃"
 ];
 
+// 6. LIFESTYLE - Drinking
 const NEPALI_DRINKING = [
-    "Chiya over Beer",
-    "Bhoj ma matrai (Social)",
-    "Raksi Handler",
-    "Occasionally",
-    "Regular Drinker",
-    "Teetotaler"
+    "Social Drinker 🍻",
+    "Weekend Warrior 🥃",
+    "Occasionally 🍷",
+    "Teetotaler (No Alcohol) 🚫",
+    "Beer Enthusiast 🍺"
 ];
 
+// 7. LIFESTYLE - Workout
 const NEPALI_WORKOUT = [
-    "Futsal every Friday",
-    "Morning Walk (Tundikhel vibe)",
-    "Gym Rat / Fitness Freak",
-    "Home Yoga & Meditation",
-    "Never",
-    "Sometimes",
-    "Regularly"
+    "Everyday Gym 💪",
+    "Futsal Weekly ⚽",
+    "Home Workouts 🧘",
+    "Morning Walks 🚶",
+    "Occasionally",
+    "Never (I choose sleep) 😴"
 ];
 
+// 8. HOMETOWNS - Major cities/districts
 const NEPALI_HOMETOWNS = [
-    "Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara", "Bharatpur", "Biratnagar", "Birgunj", "Janakpur",
-    "Ghorahi", "Hetauda", "Dharan", "Itahari", "Butwal", "Nepalgunj", "Dhangadhi", "Birtamod",
-    "Damak", "Lumbini", "Gorkha", "Mustang", "Manang", "Solukhumbu", "Ilam", "Dhankuta", "Palpa",
-    "Syangja", "Kaski", "Chitwan", "Surkhet", "Baglung", "Gulmi", "Arghakhanchi", "Pyuthan", "Rolpa",
-    "Dang", "Banke", "Bardia", "Kailali", "Kanchanpur", "Jhapa", "Morang", "Sunsari", "Saptari",
-    "Siraha", "Dhanusha", "Mahottari", "Sarlahi", "Rautahat", "Bara", "Parsa", "Makwanpur", "Sindhuli",
-    "Ramechhap", "Dolakha", "Sindhupalchok", "Kavre", "Nuwakot", "Rasuwa", "Dhading"
+    "Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara", "Chitwan", "Dharan",
+    "Butwal", "Biratnagar", "Birgunj", "Hetauda", "Nepalgunj", "Dhangadhi",
+    "Birtamod", "Itahari", "Janakpur", "Palpa", "Gorkha", "Mustang",
+    "Manang", "Illam", "Syangja", "Surkhet", "Dang", "Baglung",
+    "Kavre", "Dhading", "Nuwakot", "Ramechhap", "Sindhupalchok",
+    "Banepa", "Damak", "Lahan", "Tansen", "Bhairahawa", "...."
 ];
 
+// 9. DATE VIBES - Ideal date ideas
 const NEPALI_DATE_VIBES = [
-    "Momo & Walk in Basantapur",
-    "Chiya Guff at a local galli",
-    "Evening vibes at Jhamel",
-    "Short hike to Shivapuri/Nagarkot",
-    "Thamel Nightlife & Live Music",
-    "Patan Museum & Coffee",
-    "Chandragiri Cable Car Trip",
-    "Street Food Hunt in Birtamod/Dharan",
-    "Lakeside Stroll in Pokhara",
-    "Movie Date in QFX"
+    "Coffee Date ☕",
+    "Momo Hunt 🥟",
+    "Late Night Drive 🚗",
+    "Movie Night 🎬",
+    "Hiking / Nature Walk 🌲",
+    "Live Music / Gig 🎸",
+    "Museum / Art Gallery 🖼️",
+    "Street Food Crawl 🍢",
+    "Rooftop Dinner 🌃",
+    "Picnic at the Park 🧺"
 ];
 
+// 10. SLANG BADGES - Fun labels
 const NEPALI_SLANG_BADGES = [
-    "Maya Ho",
-    "Yestai Ho",
-    "Khana Khayau?",
-    "Guffadi",
-    "Alchi",
-    "Bindaas",
-    "Sojho Keta/Keti",
-    "Batho",
-    "Ramitey",
-    "Nakhrebaaj"
+    "Guffadi", "Bindaas", "Alchi No. 1", "Padhante",
+    "Khanchuwa", "Ghumante", "Nakhre", "Sojho",
+    "Chatterbox", "Vibe Hai", "Scene Hanne", "Chill Pill",
+    "Gym Freak", "Party Animal", "Artist", "Techie"
 ];
 
+// 11. ZODIAC (RASHI)
 const NEPALI_RASHI = [
-    "Mesh (Aries)",
-    "Brish (Taurus)",
-    "Mithun (Gemini)",
-    "Karkat (Cancer)",
-    "Simha (Leo)",
-    "Kanya (Virgo)",
-    "Tula (Libra)",
-    "Brishchik (Scorpio)",
-    "Dhanu (Sagittarius)",
-    "Makar (Capricorn)",
-    "Kumbha (Aquarius)",
-    "Meen (Pisces)"
+    "Mesh ♈", "Brish ♉", "Mithun ♊",
+    "Karkat ♋", "Simha ♌", "Kanya ♍",
+    "Tula ♎", "Brishchik ♏", "Dhanu ♐",
+    "Makar ♑", "Kumbha ♒", "Meen ♓"
 ];
 
 module.exports = {

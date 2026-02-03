@@ -103,7 +103,7 @@ router.patch('/update-profile', authenticate, validateUpdateProfile, asyncHandle
  * @desc Upload a photo to Firebase Storage
  */
 const upload = require('../../middlewares/upload.middleware');
-const { uploadFileToFirebase } = require('../../services/storage.service');
+const { uploadFileToFirebase, deleteFileFromFirebase } = require('../../services/storage.service');
 
 router.post('/upload-photo', authenticate, upload.single('photo'), asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -145,6 +145,49 @@ router.post('/upload-voice-prompt', authenticate, upload.single('audio'), asyncH
   ).select('-__v');
 
   success(res, 'Voice prompt uploaded successfully', { voicePrompt: updatedUser.voicePrompt });
+}));
+
+/**
+ * @route DELETE /api/users/delete-photo
+ * @desc Delete a specific photo from profile and Firebase
+ */
+router.delete('/delete-photo', authenticate, asyncHandler(async (req, res) => {
+  const { photoUrl } = req.body;
+  if (!photoUrl) throw new AppError('Photo URL is required', 400);
+
+  // 1. Remove from Firebase
+  await deleteFileFromFirebase(photoUrl);
+
+  // 2. Remove from DB
+  const user = await User.findOneAndUpdate(
+    { firebaseUid: req.user.uid },
+    { $pull: { photos: { url: photoUrl } } },
+    { new: true }
+  ).select('photos');
+
+  success(res, 'Photo deleted successfully', { photos: user ? user.photos : [] });
+}));
+
+/**
+ * @route DELETE /api/users/delete-voice-prompt
+ * @desc Delete voice prompt from profile and Firebase
+ */
+router.delete('/delete-voice-prompt', authenticate, asyncHandler(async (req, res) => {
+  const user = await User.findOne({ firebaseUid: req.user.uid });
+
+  if (user && user.voicePrompt && user.voicePrompt.url) {
+    // 1. Remove from Firebase
+    await deleteFileFromFirebase(user.voicePrompt.url);
+
+    // 2. Remove from DB
+    // We use unset to completely remove the field or set to null/default
+    await User.findOneAndUpdate(
+      { firebaseUid: req.user.uid },
+      { $unset: { voicePrompt: "" } }
+    );
+  }
+
+  success(res, 'Voice prompt deleted successfully');
 }));
 
 /**

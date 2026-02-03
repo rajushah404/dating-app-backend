@@ -117,6 +117,7 @@ class ConnectionService {
         // --- TRACK REVIEW COUNT FOR FREE USERS ---
         const receiverUser = await User.findById(receiverId);
         if (receiverUser && (!receiverUser.subscription || receiverUser.subscription.plan === 'free')) {
+            const dailyReviewLimit = await appConfigService.getLimit('dailyReviewLimit');
             const now = new Date();
             const lastReset = receiverUser.usage?.lastReviewReset || new Date(0);
 
@@ -129,6 +130,9 @@ class ConnectionService {
                 receiverUser.usage.dailyReviewCount = 1;
                 receiverUser.usage.lastReviewReset = now;
             } else {
+                if (receiverUser.usage.dailyReviewCount >= dailyReviewLimit) {
+                    throw new ForbiddenError(`Daily review limit reached (${dailyReviewLimit}/day). Upgrade for unlimited reviews!`);
+                }
                 receiverUser.usage.dailyReviewCount = (receiverUser.usage.dailyReviewCount || 0) + 1;
             }
             await receiverUser.save();
@@ -255,13 +259,18 @@ class ConnectionService {
             };
         }
 
-        // If we haven't reached the reveal limit yet, reveal more from the "hidden" pending pool
-        if (alreadyRevealedPending.length < dailyRevealLimit) {
+        // Check how many we have ALREADY revealed today (regardless of whether they are still pending)
+        // This ensures the strict "See X requests per day" limit.
+        const totalRevealedTodayCount = currentUser.usage.dailyRevealedLikes.length;
+
+        // If we haven't reached the reveal limit yet, reveal more FROM THE HIDDEN POOL
+        if (totalRevealedTodayCount < dailyRevealLimit) {
             const hiddenPending = allIncomingRequests.filter(req =>
                 !revealedIds.includes(req._id.toString())
             );
 
-            const spaceLeft = dailyRevealLimit - alreadyRevealedPending.length;
+            // Calculate exact space left based on TOTAL revealed count, not just currently pending
+            const spaceLeft = dailyRevealLimit - totalRevealedTodayCount;
             const toReveal = hiddenPending.slice(0, spaceLeft);
 
             toReveal.forEach(req => {
