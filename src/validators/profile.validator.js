@@ -88,8 +88,18 @@ const validateUpdateProfile = (req, res, next) => {
     }
 
     if (updates.lookingFor !== undefined) {
-        if (!NEPALI_LOOKING_FOR.includes(updates.lookingFor)) {
+        // Case-insensitive validation
+        const lookingForLower = updates.lookingFor.toLowerCase();
+        const validOptions = NEPALI_LOOKING_FOR.map(opt => opt.toLowerCase());
+
+        if (!validOptions.includes(lookingForLower)) {
             errors.push('Invalid looking for value');
+        } else {
+            // Find and set the correct casing from constants
+            const correctValue = NEPALI_LOOKING_FOR.find(opt => opt.toLowerCase() === lookingForLower);
+            if (correctValue) {
+                updates.lookingFor = correctValue;
+            }
         }
     }
 
