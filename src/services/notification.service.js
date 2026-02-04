@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 
 class NotificationService {
     /**
@@ -7,8 +8,8 @@ class NotificationService {
      */
     async sendPush(token, { title, body, data = {} }) {
         // Firebase Cloud Messaging (Push Notifications) have been removed as per request.
-        // We log this for debugging purposes but no actual notification is sent.
-        console.log(`[FCM-DISABLED] Notification would have been sent to ${token}: ${title}`);
+        // We log this for debugging purposes locally, but no actual notification is sent.
+        logger.debug(`[FCM-DISABLED] Notification would have been sent to ${token}: ${title}`);
         return null;
     }
 

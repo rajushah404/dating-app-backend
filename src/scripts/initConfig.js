@@ -1,4 +1,5 @@
 const AppConfig = require('../models/AppConfig');
+const logger = require('../utils/logger');
 
 /**
  * Initialize default app configuration
@@ -20,12 +21,12 @@ async function initializeDefaultConfig() {
                 updatedAt: new Date()
             });
 
-            console.log('✅ Default app configuration initialized:', defaultConfig);
+            logger.info('Default app configuration initialized:', defaultConfig);
         } else {
-            console.log('ℹ️  App configuration already exists:', existingConfig);
+            logger.debug('App configuration already exists');
         }
     } catch (error) {
-        console.error('❌ Error initializing app configuration:', error);
+        logger.error('Error initializing app configuration:', error);
     }
 }
 

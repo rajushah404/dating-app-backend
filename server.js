@@ -1,8 +1,23 @@
 require('dotenv').config(); // Load environment variables from .env file
 
+// Set Global Timezone to Nepal
+process.env.TZ = 'Asia/Kathmandu';
+
 const express = require('express');
 const admin = require('firebase-admin');
+const cors = require('cors');
+const compression = require('compression');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const http = require('http');
+
 const connectDB = require('./src/config/database');
+const logger = require('./src/utils/logger');
+const { initializeSocket } = require('./src/utils/socket');
+const errorHandler = require('./src/middlewares/errorHandler');
+const { success } = require('./src/utils/response');
+
+// Import Routes
 const profileRoutes = require('./src/routes/profile/profile');
 const authRoutes = require('./src/routes/auth/auth');
 const connectionRoutes = require('./src/routes/connection/connection');
@@ -14,31 +29,35 @@ const legalRoutes = require('./src/routes/legal.routes');
 const verificationRoutes = require('./src/routes/verification.routes');
 const adminRoutes = require('./src/routes/admin/admin.routes');
 
-const errorHandler = require('./src/middlewares/errorHandler');
-const { success } = require('./src/utils/response');
-const http = require('http');
-const { initializeSocket } = require('./src/utils/socket');
-
-
 // Initialize Firebase Admin SDK
-const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-});
+try {
+  const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  });
+  logger.info('Firebase Admin SDK initialized successfully');
+} catch (error) {
+  logger.error('Failed to initialize Firebase Admin SDK:', error);
+}
 
 const { generalLimiter, authLimiter, reportLimiter } = require('./src/middlewares/rateLimiter');
 
 const app = express();
 
-// Middleware to parse JSON and URL-encoded bodies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// --- Production Middlewares ---
+app.use(helmet()); // Security headers
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*', // Adjust in production
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(compression()); // Compress responses
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Set security HTTP headers
-const helmet = require('helmet');
-app.use(helmet());
+// Logging requests
+app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
 
 // Global Rate Limiter
 app.use('/api', generalLimiter);
@@ -50,7 +69,7 @@ connectDB();
 const { initializeDefaultConfig } = require('./src/scripts/initConfig');
 initializeDefaultConfig();
 
-// Use the routes
+// --- Use the routes ---
 app.use('/api/users', profileRoutes);
 app.use('/api/connections', connectionRoutes);
 app.use('/api/discover', discoverRoutes);
@@ -63,26 +82,40 @@ app.use('/api/admin', adminRoutes);
 
 app.use('/', authLimiter, authRoutes);
 
-// Basic route for health check
-app.get('/', (req, res) => {
-  success(res, 'Dating App Backend is running!');
+// Health check
+app.get('/health', (req, res) => {
+  success(res, 'MAYA Backend is healthy!', { timestamp: new Date() });
 });
 
-// Test route
-app.get('/test', (req, res) => {
-  success(res, 'Test successful');
+// Root route
+app.get('/', (req, res) => {
+  success(res, 'Welcome to MAYA (Premium Dating App) API');
 });
 
 // Global Error Handling Middleware (must be after all routes)
 app.use(errorHandler);
 
-
-// Cerating HTTP Server
+// Creating HTTP Server
 const server = http.createServer(app);
 initializeSocket(server);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
+const HOST = process.env.HOST || '0.0.0.0';
+
+server.listen(PORT, HOST, () => {
+  logger.info(`🚀 Server is running on http://${HOST}:${PORT}`);
+});
+
+// Handle unhandled rejections
+process.on('unhandledRejection', (err) => {
+  logger.error('UNHANDLED REJECTION! 💥 Shutting down...', err);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...', err);
+  process.exit(1);
 });

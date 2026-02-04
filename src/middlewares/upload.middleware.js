@@ -1,12 +1,13 @@
 const multer = require('multer');
 const path = require('path');
+const logger = require('../utils/logger');
 
 // Configure multer to store files in memory
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
     // Log the file details for debugging
-    console.log('File details:', {
+    logger.debug('File details:', {
         fieldname: file.fieldname,
         originalname: file.originalname,
         mimetype: file.mimetype

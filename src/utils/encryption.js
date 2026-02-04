@@ -1,6 +1,7 @@
 const CryptoJS = require('crypto-js');
+const logger = require('./logger');
 
-const ENCRYPTION_KEY = process.env.MESSAGE_ENCRYPTION_KEY || 'fallback-secret-key-edugate-2026';
+const ENCRYPTION_KEY = process.env.MESSAGE_ENCRYPTION_KEY || 'fallback-secret-key-maya-2026';
 
 /**
  * Encrypt a string using AES-256
@@ -24,7 +25,7 @@ const decrypt = (ciphertext) => {
         const originalText = bytes.toString(CryptoJS.enc.Utf8);
         return originalText || "[Decryption Error]";
     } catch (e) {
-        console.error('Decryption failed:', e.message);
+        logger.error('Decryption failed:', e);
         return "[Encrypted Message]";
     }
 };

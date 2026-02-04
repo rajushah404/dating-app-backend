@@ -6,6 +6,7 @@ const { success } = require('../../utils/response');
 const { validateUpdateProfile } = require('../../validators/profile.validator');
 const AppError = require('../../utils/AppError');
 const { isUserOnline } = require('../../utils/socket');
+const logger = require('../../utils/logger');
 
 const router = express.Router();
 
@@ -249,10 +250,10 @@ router.delete('/delete-account', authenticate, asyncHandler(async (req, res) => 
     // Execute all deletions in parallel
     if (filesToDelete.length > 0) {
       await Promise.all(filesToDelete);
-      console.log(`🧹 Cleaned up ${filesToDelete.length} files from storage for user ${userId}`);
+      logger.info(`🧹 Cleaned up ${filesToDelete.length} files from storage for user ${userId}`);
     }
   } catch (err) {
-    console.error('Error cleaning up user files from storage:', err.message);
+    logger.error('Error cleaning up user files from storage:', err);
     // Continue even if some files fail to delete
   }
 
@@ -269,7 +270,7 @@ router.delete('/delete-account', authenticate, asyncHandler(async (req, res) => 
   try {
     await admin.auth().deleteUser(req.user.uid);
   } catch (error) {
-    console.error('Firebase user deletion failed:', error.message);
+    logger.error('Firebase user deletion failed:', error);
     // Continue even if Firebase fails, as the local data is already gone
   }
 

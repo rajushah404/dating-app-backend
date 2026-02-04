@@ -1,9 +1,17 @@
 const { error } = require('../utils/response');
+const logger = require('../utils/logger');
 
 const errorHandler = (err, req, res, next) => {
     let statusCode = err.statusCode || 500;
     let message = err.message || 'Internal Server Error';
     let errors = err.errors || [];
+
+    // Log the error
+    if (statusCode >= 500) {
+        logger.error(`[Internal] ${req.method} ${req.originalUrl} -`, err);
+    } else {
+        logger.warn(`[Client] ${req.method} ${req.originalUrl} - ${message}`, { errors, statusCode });
+    }
 
     // Mongoose Duplicate Key Error (code: 11000)
     if (err.code === 11000) {

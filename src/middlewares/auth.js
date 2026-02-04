@@ -1,6 +1,7 @@
 const { verifyToken } = require('../utils/jwt');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
+const logger = require('../utils/logger');
 
 // Middleware to authenticate requests using Custom JWT
 const authenticate = asyncHandler(async (req, res, next) => {
@@ -26,7 +27,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
         // Proceed to the next middleware or route handler
         next();
     } catch (error) {
-        console.error('Error verifying Custom JWT:', error);
+        logger.error('Error verifying Custom JWT:', error);
         throw new AppError('Invalid or expired authentication token', 401);
     }
 });

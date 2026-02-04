@@ -2,6 +2,7 @@ const userRepository = require('../repositories/user.repository');
 const connectionRepository = require('../repositories/connection.repository');
 const { isUserOnline } = require('../utils/socket');
 const AppError = require('../utils/AppError');
+const logger = require('../utils/logger');
 
 class DiscoverService {
     async getDiscoveryFeed(currentUserId, cursor, limit = 20, overrides = {}) {
@@ -22,8 +23,7 @@ class DiscoverService {
         // 2. Build exclusion list (interacted users + self)
         const interactedUserIds = await connectionRepository.findInteractedUserIds(currentUserId);
 
-        console.log(`Discovery for User: ${currentUser.name} (${currentUserId})`);
-        console.log('Excluding IDs:', [...interactedUserIds, currentUserId]);
+        logger.debug(`Discovery initiated for User: ${currentUser.name}`);
 
         // 3. Apply age / gender / distance filters (Priority: Overrides > Profile Settings)
         const filters = {
@@ -49,10 +49,8 @@ class DiscoverService {
             limit: parseInt(limit)
         };
 
-        console.log('Filters Applied:', JSON.stringify(filters, null, 2));
-
         const users = await userRepository.findDiscoverableUsers(filters);
-        console.log(`Users found: ${users.length}`);
+        logger.info(`Discovery for ${currentUser.name}: ${users.length} users found`);
 
         // 4. Format response and calculate distance if needed
         // Note: Since we used $near, we can't easily get the precise distance in the same query result without aggregation.

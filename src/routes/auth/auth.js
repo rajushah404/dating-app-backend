@@ -6,20 +6,20 @@ const { success } = require('../../utils/response');
 const { validateAuth } = require('../../validators/auth.validator');
 const AppError = require('../../utils/AppError');
 const { signToken } = require('../../utils/jwt');
+const logger = require('../../utils/logger');
 
 const authRouter = express.Router();
 
 // POST /auth route to authenticate user with Firebase ID token
 authRouter.post('/auth', validateAuth, asyncHandler(async (req, res) => {
   const { idToken } = req.body;
-  console.log('Received ID token:', idToken);
 
   let decodedToken;
   try {
     // Verify the Firebase ID token
     decodedToken = await admin.auth().verifyIdToken(idToken);
   } catch (error) {
-    console.error('Firebase ID token verification failed:', error);
+    logger.error('Firebase ID token verification failed:', error);
     throw new AppError('Invalid or expired authentication token', 401);
   }
 
@@ -37,13 +37,13 @@ authRouter.post('/auth', validateAuth, asyncHandler(async (req, res) => {
       email,
     });
     await user.save();
-    console.log('New user created:', user);
+    logger.info(`New user created: ${user._id}`);
   } else if (user.accountStatus === 'deactivated') {
     // Automatically reactivate user on login
     user.accountStatus = 'active';
     await user.save();
     wasDeactivated = true;
-    console.log(`User ${user.name} reactivated upon login`);
+    logger.info(`User ${user.name || user._id} reactivated upon login`);
   }
 
   // Create custom JWT for our app (long-lived)

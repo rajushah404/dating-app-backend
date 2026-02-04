@@ -3,6 +3,7 @@ const User = require('../models/User');
 const { getIO, isUserOnline } = require('../utils/socket');
 const notificationService = require('./notification.service');
 const appConfigService = require('./appConfig.service');
+const logger = require('../utils/logger');
 const {
     BadRequestError,
     NotFoundError,
@@ -37,10 +38,10 @@ class ConnectionService {
             const now = new Date();
             const lastReset = currentUser.usage?.lastLikeReset || new Date(0);
 
-            // Check if it's a new day (UTC based)
-            const isNewDay = now.getUTCFullYear() !== lastReset.getUTCFullYear() ||
-                now.getUTCMonth() !== lastReset.getUTCMonth() ||
-                now.getUTCDate() !== lastReset.getUTCDate();
+            // Check if it's a new day (Local based, which is now Nepali)
+            const isNewDay = now.getFullYear() !== lastReset.getFullYear() ||
+                now.getMonth() !== lastReset.getMonth() ||
+                now.getDate() !== lastReset.getDate();
 
             if (isNewDay) {
                 // Reset count for a new day - DO NOT overwrite the whole object!
@@ -86,7 +87,7 @@ class ConnectionService {
                     sentAt: connection.createdAt
                 });
             } catch (error) {
-                console.error('Socket notification failed for match request:', error.message);
+                logger.error('Socket notification failed for match request:', error);
             }
 
             // --- CLOUD PUSH NOTIFICATION REMOVED ---
@@ -122,9 +123,9 @@ class ConnectionService {
             const lastReset = receiverUser.usage?.lastReviewReset || new Date(0);
 
             // Check if it's a new day
-            const isNewDay = now.getUTCFullYear() !== lastReset.getUTCFullYear() ||
-                now.getUTCMonth() !== lastReset.getUTCMonth() ||
-                now.getUTCDate() !== lastReset.getUTCDate();
+            const isNewDay = now.getFullYear() !== lastReset.getFullYear() ||
+                now.getMonth() !== lastReset.getMonth() ||
+                now.getDate() !== lastReset.getDate();
 
             if (isNewDay) {
                 receiverUser.usage.dailyReviewCount = 1;
@@ -159,7 +160,7 @@ class ConnectionService {
                     matchedAt: updatedConnection.updatedAt
                 });
             } catch (error) {
-                console.error('Socket notification failed for match acceptance:', error.message);
+                logger.error('Socket notification failed for match acceptance:', error);
             }
 
             // --- CLOUD PUSH NOTIFICATION REMOVED ---
@@ -221,14 +222,14 @@ class ConnectionService {
         const lastReviewReset = currentUser.usage?.lastReviewReset || new Date(0);
 
         // Check if it's a new day for reveals
-        const isNewDayReveal = now.getUTCFullYear() !== lastRevealReset.getUTCFullYear() ||
-            now.getUTCMonth() !== lastRevealReset.getUTCMonth() ||
-            now.getUTCDate() !== lastRevealReset.getUTCDate();
+        const isNewDayReveal = now.getFullYear() !== lastRevealReset.getFullYear() ||
+            now.getMonth() !== lastRevealReset.getMonth() ||
+            now.getDate() !== lastRevealReset.getDate();
 
         // Check if it's a new day for reviews
-        const isNewDayReview = now.getUTCFullYear() !== lastReviewReset.getUTCFullYear() ||
-            now.getUTCMonth() !== lastReviewReset.getUTCMonth() ||
-            now.getUTCDate() !== lastReviewReset.getUTCDate();
+        const isNewDayReview = now.getFullYear() !== lastReviewReset.getFullYear() ||
+            now.getMonth() !== lastReviewReset.getMonth() ||
+            now.getDate() !== lastReviewReset.getDate();
 
         let needsSave = false;
         if (isNewDayReveal) {
@@ -328,7 +329,7 @@ class ConnectionService {
             io.to(fromUserId.toString()).emit('USER_BLOCKED', { blockedUserId: toUserId });
             io.to(toUserId.toString()).emit('USER_BLOCKED', { blockedUserId: fromUserId });
         } catch (error) {
-            console.error('Socket notification failed for block:', error.message);
+            logger.error('Socket notification failed for block:', error);
         }
 
         return connection;

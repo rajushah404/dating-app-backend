@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('../utils/logger');
 
 /**
  * Uploads a file to Firebase Storage
@@ -58,26 +59,26 @@ const deleteFileFromFirebase = async (publicUrl) => {
         const bucketName = bucket.name;
 
         if (!publicUrl.includes(bucketName)) {
-            console.warn(`File does not belong to this bucket (${bucketName}): ${publicUrl}`);
+            logger.warn(`File does not belong to this bucket (${bucketName}): ${publicUrl}`);
             return;
         }
 
         const pathPart = publicUrl.split(`${bucketName}/`)[1];
         if (!pathPart) {
-            console.warn(`Could not extract file path from URL: ${publicUrl}`);
+            logger.warn(`Could not extract file path from URL: ${publicUrl}`);
             return;
         }
 
         const filePath = decodeURIComponent(pathPart);
         await bucket.file(filePath).delete();
-        console.log(`Successfully deleted file from Firebase: ${filePath}`);
+        logger.info(`Successfully deleted file from Firebase: ${filePath}`);
 
     } catch (error) {
         // If file not found, we can consider it "deleted" or just log a warning
         if (error.code === 404) {
-            console.warn(`File not found in Firebase (already deleted?): ${publicUrl}`);
+            logger.warn(`File not found in Firebase (already deleted?): ${publicUrl}`);
         } else {
-            console.error(`Error deleting file from Firebase: ${error.message}`);
+            logger.error(`Error deleting file from Firebase: ${error.message}`);
             throw error;
         }
     }
