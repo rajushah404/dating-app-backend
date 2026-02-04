@@ -43,11 +43,9 @@ class ConnectionService {
                 now.getUTCDate() !== lastReset.getUTCDate();
 
             if (isNewDay) {
-                // Reset count for a new day
-                currentUser.usage = {
-                    dailyLikeCount: 1,
-                    lastLikeReset: now
-                };
+                // Reset count for a new day - DO NOT overwrite the whole object!
+                currentUser.usage.dailyLikeCount = 1;
+                currentUser.usage.lastLikeReset = now;
             } else {
                 // Check if limit reached
                 if (currentUser.usage.dailyLikeCount >= dailySendLimit) {
@@ -56,6 +54,8 @@ class ConnectionService {
                 // Increment count
                 currentUser.usage.dailyLikeCount += 1;
             }
+
+            currentUser.markModified('usage');
             await currentUser.save();
         }
         // --- END LIMIT LOGIC ---
@@ -135,6 +135,8 @@ class ConnectionService {
                 }
                 receiverUser.usage.dailyReviewCount = (receiverUser.usage.dailyReviewCount || 0) + 1;
             }
+
+            receiverUser.markModified('usage');
             await receiverUser.save();
         }
 
@@ -228,14 +230,22 @@ class ConnectionService {
             now.getUTCMonth() !== lastReviewReset.getUTCMonth() ||
             now.getUTCDate() !== lastReviewReset.getUTCDate();
 
+        let needsSave = false;
         if (isNewDayReveal) {
             currentUser.usage.dailyRevealedLikes = [];
             currentUser.usage.lastRevealedReset = now;
+            needsSave = true;
         }
 
         if (isNewDayReview) {
             currentUser.usage.dailyReviewCount = 0;
             currentUser.usage.lastReviewReset = now;
+            needsSave = true;
+        }
+
+        if (needsSave) {
+            currentUser.markModified('usage');
+            await currentUser.save();
         }
 
         // Get current review count
@@ -278,6 +288,7 @@ class ConnectionService {
             });
 
             if (toReveal.length > 0) {
+                currentUser.markModified('usage');
                 await currentUser.save();
             }
 

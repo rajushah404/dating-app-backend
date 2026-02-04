@@ -1,20 +1,27 @@
 /**
- * Custom legal documents tailored specifically for Edugate (Nepali Dating App).
- * Refined based on project use cases: Location-based discovery, Rashi/lifestyle matching,
- * voice prompts, and the upcoming subscription model.
+ * Custom legal documents tailored specifically for MAYA (Premium Dating App).
+ * Version: 1.0.0 (Build 1)
  */
 
+const APP_INFO = {
+    name: "MAYA (Premium Dating App)",
+    version: "1.0.0",
+    buildNumber: 1
+};
+
 const PRIVACY_POLICY = {
-    title: "Privacy Policy for Edugate",
-    lastUpdated: "February 1, 2026",
+    title: `Privacy Policy for ${APP_INFO.name}`,
+    lastUpdated: "February 4, 2026",
+    version: APP_INFO.version,
+    build: APP_INFO.buildNumber,
     sections: [
         {
             heading: "1. Information We Collect",
-            content: "To help you find matches, we collect: Profile details (Name, Age, Gender, Bio), Hyper-local attributes (Hometown, Vedic Rashi, Slang Badges), Lifestyle preferences (Smoking, Drinking, Workout), and Media (Photos and Voice Prompts). We also collect your Email via Firebase Authentication for account security."
+            content: `To help you find matches, we collect: Profile details (Name, Age, Gender, Bio), Hyper-local attributes (Hometown, Vedic Rashi, Slang Badges), Lifestyle preferences (Smoking, Drinking, Workout), and Media (Photos and Voice Prompts). We also collect your Email via Firebase Authentication for account security.`
         },
         {
             heading: "2. Precise Location Data",
-            content: "Edugate is a location-based discovery app. We collect your GPS coordinates to show you users within your selected distance (e.g., within 10km of Kathmandu). This data is processed in real-time and updated when you use the app."
+            content: `${APP_INFO.name} is a location-based discovery app. We collect your GPS coordinates to show you users within your selected distance (e.g., within 10km of Kathmandu). This data is processed in real-time and updated when you use the app.`
         },
         {
             heading: "3. How We Use Your Data",
@@ -32,12 +39,14 @@ const PRIVACY_POLICY = {
 };
 
 const TERMS_OF_SERVICE = {
-    title: "Edugate Terms of Service",
-    lastUpdated: "February 1, 2026",
+    title: `${APP_INFO.name} Terms of Service`,
+    lastUpdated: "February 4, 2026",
+    version: APP_INFO.version,
+    build: APP_INFO.buildNumber,
     sections: [
         {
             heading: "1. Eligibility",
-            content: "You must be at least 18 years old to use Edugate. By creating an account, you represent that you are a legal adult in Nepal or your current place of residence."
+            content: `You must be at least 18 years old to use ${APP_INFO.name}. By creating an account, you represent that you are a legal adult in Nepal or your current place of residence.`
         },
         {
             heading: "2. Account Usage",
@@ -45,7 +54,7 @@ const TERMS_OF_SERVICE = {
         },
         {
             heading: "3. Daily Limits & Subscriptions",
-            content: "Free users are limited to 20 likes per 24-hour period. Edugate Gold and Platinum subscriptions offer unlimited likes and advanced filters (like Rashi and Slang filters). Subscription fees are non-refundable once the premium features are activated."
+            content: `Free users are limited to 20 likes per 24-hour period. ${APP_INFO.name} Gold and Platinum subscriptions offer unlimited likes and advanced filters (like Rashi and Slang filters). Subscription fees are non-refundable once the premium features are activated.`
         },
         {
             heading: "4. Prohibited Content",
@@ -53,14 +62,16 @@ const TERMS_OF_SERVICE = {
         },
         {
             heading: "5. Termination",
-            content: "Edugate reserves the right to terminate accounts that violate community safety, receive multiple reports, or attempt to bypass our daily like limits via technical exploits."
+            content: `${APP_INFO.name} reserves the right to terminate accounts that violate community safety, receive multiple reports, or attempt to bypass our daily like limits via technical exploits.`
         }
     ]
 };
 
 const COMMUNITY_GUIDELINES = {
-    title: "Edugate Community Guidelines (The 'Bindaas' Code)",
-    lastUpdated: "February 1, 2026",
+    title: `${APP_INFO.name} Community Guidelines (The 'Bindaas' Code)`,
+    lastUpdated: "February 4, 2026",
+    version: APP_INFO.version,
+    build: APP_INFO.buildNumber,
     sections: [
         {
             heading: "Be Sojho & Respectful",

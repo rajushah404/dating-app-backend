@@ -1,7 +1,7 @@
 {
-  "name": "dating-app",
+  "name": "maya-dating-app-backend",
   "version": "1.0.0",
-  "description": "Dating App Backend",
+  "description": "MAYA (Premium Dating App) Backend",
   "keywords": [
     "Node",
     "js"

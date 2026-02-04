@@ -230,16 +230,42 @@ router.delete('/delete-account', authenticate, asyncHandler(async (req, res) => 
 
   const userId = user._id;
 
-  // 1. Delete all connections
+  // 1. Delete all files from Firebase Storage
+  try {
+    const filesToDelete = [];
+
+    // Add photos
+    if (user.photos && user.photos.length > 0) {
+      user.photos.forEach(p => {
+        if (p.url) filesToDelete.push(deleteFileFromFirebase(p.url));
+      });
+    }
+
+    // Add voice prompt
+    if (user.voicePrompt && user.voicePrompt.url) {
+      filesToDelete.push(deleteFileFromFirebase(user.voicePrompt.url));
+    }
+
+    // Execute all deletions in parallel
+    if (filesToDelete.length > 0) {
+      await Promise.all(filesToDelete);
+      console.log(`🧹 Cleaned up ${filesToDelete.length} files from storage for user ${userId}`);
+    }
+  } catch (err) {
+    console.error('Error cleaning up user files from storage:', err.message);
+    // Continue even if some files fail to delete
+  }
+
+  // 2. Delete all connections
   await connectionRepository.deleteByUser(userId);
 
-  // 2. Delete all messages
+  // 3. Delete all messages
   await messageRepository.deleteByUser(userId);
 
-  // 3. Delete from MongoDB
+  // 4. Delete from MongoDB
   await User.findByIdAndDelete(userId);
 
-  // 4. Delete from Firebase Auth (Optional but recommended)
+  // 5. Delete from Firebase Auth (Optional but recommended)
   try {
     await admin.auth().deleteUser(req.user.uid);
   } catch (error) {
