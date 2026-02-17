@@ -92,10 +92,21 @@ const userSchema = new mongoose.Schema({
   },
 
   accountStatus: { type: String, enum: ['active', 'deactivated'], default: 'active' },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
 
   lastActiveAt: { type: Date }
 
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  toJSON: {
+    transform: function (doc, ret) {
+      delete ret.__v;
+      // Sensitive fields that should usually be hidden
+      // (Keep email if needed by own profile)
+      return ret;
+    }
+  }
+});
 
 
 // Auto-set interestedIn based on gender (Default behavior)

@@ -6,6 +6,7 @@ if (process.env.TZ) {
 }
 
 const express = require('express');
+const mongoose = require('mongoose');
 const admin = require('firebase-admin');
 const cors = require('cors');
 const compression = require('compression');
@@ -86,7 +87,12 @@ app.use('/', authLimiter, authRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
-  success(res, 'MAYA Backend is healthy!', { timestamp: new Date() });
+  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  success(res, 'MAYA Backend is healthy!', {
+    timestamp: new Date(),
+    database: dbStatus,
+    uptime: process.uptime()
+  });
 });
 
 // Root route

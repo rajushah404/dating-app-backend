@@ -18,7 +18,7 @@ const fileFilter = (req, file, cb) => {
     // Check extension
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     // Check mimetype
-    const mimetype = file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/') || file.mimetype === 'application/octet-stream';
+    const mimetype = file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/');
 
     if (mimetype || extname) {
         cb(null, true);

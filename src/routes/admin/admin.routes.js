@@ -5,6 +5,8 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { success } = require('../../utils/response');
 const AppError = require('../../utils/AppError');
 
+const isAdmin = require('../../middlewares/isAdmin');
+
 const router = express.Router();
 
 /**
@@ -21,10 +23,7 @@ router.get('/config', asyncHandler(async (req, res) => {
  * @desc Update app configuration (Admin only)
  * @body { dailySendLimit?, dailyRevealLimit?, dailyReviewLimit? }
  */
-router.put('/config', authenticate, asyncHandler(async (req, res) => {
-    // TODO: Add admin role check here
-    // For now, any authenticated user can update (you should add admin middleware)
-
+router.put('/config', authenticate, isAdmin, asyncHandler(async (req, res) => {
     const { dailySendLimit, dailyRevealLimit, dailyReviewLimit } = req.body;
 
     // Validation
