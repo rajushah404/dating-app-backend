@@ -104,8 +104,39 @@ const COMMUNITY_GUIDELINES = {
     ]
 };
 
+const CHILD_SAFETY_STANDARDS = {
+    title: `${APP_INFO.name} Child Safety & CSAE Prevention Standards`,
+    lastUpdated: "February 17, 2026",
+    version: APP_INFO.version,
+    build: APP_INFO.buildNumber,
+    contactEmail: "rajushah2286@gmail.com",
+    sections: [
+        {
+            heading: "1. Zero Tolerance Policy",
+            content: `${APP_INFO.name} has a zero-tolerance policy regarding Child Sexual Abuse Material (CSAM) and Child Sexual Abuse and Exploitation (CSAE). We prohibit any content that depicts, promotes, or facilitates the sexual exploitation or abuse of children.`
+        },
+        {
+            heading: "2. Age Requirement & Verification",
+            content: "Maya is strictly for users aged 18 and above. We use profile verification and manual moderation to ensure all users meet the age requirement. Any account suspected of belonging to a minor will be permanently banned."
+        },
+        {
+            heading: "3. Reporting Mechanism",
+            content: "Users are encouraged to report any suspicious behavior, profiles, or content immediately using the in-app 'Report' feature. All reports related to child safety are prioritized and reviewed by our security team within 24 hours."
+        },
+        {
+            heading: "4. Collaboration with Authorities",
+            content: "We comply with all relevant child safety laws. We proactively report CSAM/CSAE to the National Center for Missing & Exploited Children (NCMEC) and work closely with Nepali law enforcement to ensure a safe digital environment."
+        },
+        {
+            heading: "5. Prohibited Prohibited Content",
+            content: "Strictly prohibited content includes: 1. Imagery of minors in sexual contexts. 2. Content facilitating child grooming or trafficking. 3. Links to external sites containing CSAE. 4. Any attempt to solicit minors."
+        }
+    ]
+};
+
 module.exports = {
     PRIVACY_POLICY,
     TERMS_OF_SERVICE,
-    COMMUNITY_GUIDELINES
+    COMMUNITY_GUIDELINES,
+    CHILD_SAFETY_STANDARDS
 };

@@ -2,7 +2,8 @@ const express = require('express');
 const {
     PRIVACY_POLICY,
     TERMS_OF_SERVICE,
-    COMMUNITY_GUIDELINES
+    COMMUNITY_GUIDELINES,
+    CHILD_SAFETY_STANDARDS
 } = require('../utils/legalConstants');
 const { success } = require('../utils/response');
 
@@ -33,6 +34,14 @@ router.get('/community-guidelines', (req, res) => {
 });
 
 /**
+ * @route GET /api/legal/child-safety-standards
+ * @desc Get the Child Safety Standards (CSAE Prevention)
+ */
+router.get('/child-safety-standards', (req, res) => {
+    success(res, 'Child Safety Standards fetched successfully', CHILD_SAFETY_STANDARDS);
+});
+
+/**
  * @route GET /api/legal/all
  * @desc Get all legal documents in one call
  */
@@ -40,7 +49,8 @@ router.get('/all', (req, res) => {
     success(res, 'All legal documents fetched successfully', {
         privacyPolicy: PRIVACY_POLICY,
         termsOfService: TERMS_OF_SERVICE,
-        communityGuidelines: COMMUNITY_GUIDELINES
+        communityGuidelines: COMMUNITY_GUIDELINES,
+        childSafetyStandards: CHILD_SAFETY_STANDARDS
     });
 });
 
