@@ -1,7 +1,9 @@
 require('dotenv').config(); // Load environment variables from .env file
 
-// Set Global Timezone to Nepal
-process.env.TZ = 'Asia/Kathmandu';
+// Set Global Timezone
+if (process.env.TZ) {
+  process.env.TZ = process.env.TZ;
+}
 
 const express = require('express');
 const admin = require('firebase-admin');
@@ -53,8 +55,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(compression()); // Compress responses
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: process.env.JSON_PAYLOAD_LIMIT || '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: process.env.JSON_PAYLOAD_LIMIT || '10mb' }));
 
 // Logging requests
 app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));

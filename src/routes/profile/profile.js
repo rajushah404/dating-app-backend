@@ -7,6 +7,7 @@ const { validateUpdateProfile } = require('../../validators/profile.validator');
 const AppError = require('../../utils/AppError');
 const { isUserOnline } = require('../../utils/socket');
 const logger = require('../../utils/logger');
+const { PROFILE_REQUIRED_FIELDS, STORAGE_PATHS, DEFAULT_VOICE_PROMPT_QUESTION } = require('../../config/constants');
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.get('/profile', authenticate, asyncHandler(async (req, res) => {
   if (!user) {
     user = new User({
       firebaseUid,
-      name: req.user.name || 'Unknown',
+      name: req.user.name || process.env.DEFAULT_USER_NAME || 'Unknown',
       email: req.user.email,
     });
     await user.save();
@@ -78,7 +79,7 @@ router.patch('/update-profile', authenticate, validateUpdateProfile, asyncHandle
   }
 
   // Check profile completion
-  const requiredFields = ['name', 'age', 'gender', 'interestedIn', 'lookingFor'];
+  const requiredFields = PROFILE_REQUIRED_FIELDS;
   let completed = true;
   for (const field of requiredFields) {
     if (!updatedUser[field]) {
@@ -111,7 +112,7 @@ router.post('/upload-photo', authenticate, upload.single('photo'), asyncHandler(
     throw new AppError('Please upload a file', 400);
   }
 
-  const imageUrl = await uploadFileToFirebase(req.file, `users/${req.user.uid}/photos`);
+  const imageUrl = await uploadFileToFirebase(req.file, STORAGE_PATHS.USER_PHOTOS(req.user.uid));
 
   success(res, 'Photo uploaded successfully', { imageUrl });
 }));
@@ -127,7 +128,7 @@ router.post('/upload-voice-prompt', authenticate, upload.single('audio'), asyncH
 
   const { duration, promptQuestion } = req.body;
 
-  const audioUrl = await uploadFileToFirebase(req.file, `users/${req.user.uid}/voice`);
+  const audioUrl = await uploadFileToFirebase(req.file, STORAGE_PATHS.USER_VOICE(req.user.uid));
 
   // Update user model with voice prompt info
   const updatedUser = await User.findOneAndUpdate(
@@ -137,7 +138,7 @@ router.post('/upload-voice-prompt', authenticate, upload.single('audio'), asyncH
         voicePrompt: {
           url: audioUrl,
           duration: duration ? parseInt(duration) : 0,
-          promptQuestion: promptQuestion || 'Introduction',
+          promptQuestion: promptQuestion || DEFAULT_VOICE_PROMPT_QUESTION,
           createdAt: new Date()
         }
       }

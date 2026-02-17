@@ -30,10 +30,10 @@ class DiscoverService {
             currentUserId,
             interactedUserIds,
             genderPreference: overrides.gender || currentUser.interestedIn || [],
-            ageMin: overrides.ageMin || currentUser.agePreference?.min || 18,
-            ageMax: overrides.ageMax || currentUser.agePreference?.max || 50,
+            ageMin: overrides.ageMin || currentUser.agePreference?.min || parseInt(process.env.DEFAULT_AGE_MIN) || 18,
+            ageMax: overrides.ageMax || currentUser.agePreference?.max || parseInt(process.env.DEFAULT_AGE_MAX) || 50,
             location: currentUser.location,
-            maxDistanceKm: overrides.distance || currentUser.maxDistanceKm || 10,
+            maxDistanceKm: overrides.distance || currentUser.maxDistanceKm || parseInt(process.env.DEFAULT_DISTANCE_KM) || 10,
             hometown: overrides.hometown,
             preferredDateVibe: overrides.preferredDateVibe,
             slangBadges: overrides.slangBadges,
@@ -46,7 +46,7 @@ class DiscoverService {
             personality: overrides.personality,
             isVerified: overrides.isVerified,
             cursor,
-            limit: parseInt(limit)
+            limit: parseInt(limit) || parseInt(process.env.DEFAULT_PAGINATION_LIMIT) || 20
         };
 
         const users = await userRepository.findDiscoverableUsers(filters);

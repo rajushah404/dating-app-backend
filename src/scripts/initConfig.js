@@ -13,9 +13,9 @@ async function initializeDefaultConfig() {
             const defaultConfig = await AppConfig.create({
                 key: 'FREE_USER_LIMITS',
                 freeUserLimits: {
-                    dailySendLimit: 20,      // Free users can send 20 likes per day
-                    dailyRevealLimit: 2,     // Free users can see 2 pending requests per day
-                    dailyReviewLimit: 2      // Free users can review 2 requests per day
+                    dailySendLimit: parseInt(process.env.FREE_DAILY_SEND_LIMIT) || 20,
+                    dailyRevealLimit: parseInt(process.env.FREE_DAILY_REVEAL_LIMIT) || 2,
+                    dailyReviewLimit: parseInt(process.env.FREE_DAILY_REVIEW_LIMIT) || 2
                 },
                 updatedBy: 'system',
                 updatedAt: new Date()
