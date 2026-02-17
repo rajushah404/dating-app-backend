@@ -11,7 +11,7 @@ const APP_INFO = {
 
 const PRIVACY_POLICY = {
     title: `Privacy Policy for ${APP_INFO.name}`,
-    lastUpdated: "February 4, 2026",
+    lastUpdated: "February 17, 2026",
     version: APP_INFO.version,
     build: APP_INFO.buildNumber,
     sections: [
@@ -34,13 +34,17 @@ const PRIVACY_POLICY = {
         {
             heading: "5. Safety & Reporting",
             content: "For community safety, we store reports and block lists. If you are reported for harassment, your profile data may be reviewed by our moderation team to ensure a safe environment for all Nepali youths."
+        },
+        {
+            heading: "6. Data Deletion & Retention",
+            content: "You have full control over your data. If you choose to delete your account, we permanently remove your profile, photos, voice prompts, match history, and chat messages from our active servers. Some service logs may be retained for security auditing purposes for a limited period, but they will not be linked to your personal identity."
         }
     ]
 };
 
 const TERMS_OF_SERVICE = {
     title: `${APP_INFO.name} Terms of Service`,
-    lastUpdated: "February 4, 2026",
+    lastUpdated: "February 17, 2026",
     version: APP_INFO.version,
     build: APP_INFO.buildNumber,
     sections: [
@@ -63,6 +67,10 @@ const TERMS_OF_SERVICE = {
         {
             heading: "5. Termination",
             content: `${APP_INFO.name} reserves the right to terminate accounts that violate community safety, receive multiple reports, or attempt to bypass our daily like limits via technical exploits.`
+        },
+        {
+            heading: "6. User-Initiated Account Deletion",
+            content: "You may delete your account at any time through the 'Settings' section. Account deletion is permanent and irreversible. Once deleted, your profile, photos, matches, and messages cannot be recovered. Ensure you have saved any important information before proceeding with deletion."
         }
     ]
 };
