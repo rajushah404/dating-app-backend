@@ -120,6 +120,12 @@ app.get('/', (req, res) => {
   success(res, 'Welcome to MAYA (Premium Dating App) API');
 });
 
+// Test POST route
+app.post('/api/test-post', (req, res) => {
+  logger.info(`Test POST hit. Body: ${JSON.stringify(req.body)}`);
+  success(res, 'Test POST successful', { body: req.body });
+});
+
 // 404 Handler - log the request path to help debug what the frontend is calling
 app.use((req, res, next) => {
   logger.warn(`404 Not Found: ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
