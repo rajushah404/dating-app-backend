@@ -9,7 +9,7 @@ const userSocketCount = new Map(); // userId -> number of active sockets
 const initializeSocket = (server) => {
     io = socketIO(server, {
         cors: {
-            origin: "*", // Adjust this in production
+            origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
             methods: ["GET", "POST"]
         }
     });

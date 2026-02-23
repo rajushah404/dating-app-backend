@@ -48,19 +48,37 @@ const { generalLimiter, authLimiter, reportLimiter } = require('./src/middleware
 
 const app = express();
 
+// Trust proxy for production (e.g., behind Nginx)
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+
 // --- Production Middlewares ---
 app.use(helmet()); // Security headers
+
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['*'];
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*', // Adjust in production
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(compression()); // Compress responses
 app.use(express.json({ limit: process.env.JSON_PAYLOAD_LIMIT || '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: process.env.JSON_PAYLOAD_LIMIT || '10mb' }));
 
 // Logging requests
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+const logFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
+app.use(morgan(logFormat, { stream: { write: (message) => logger.info(message.trim()) } }));
 
 // Global Rate Limiter
 app.use('/api', generalLimiter);
