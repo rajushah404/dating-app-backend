@@ -55,7 +55,31 @@ logger.info('Express "trust proxy" is set to 1');
 
 
 // --- Production Middlewares ---
-app.use(helmet()); // Security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "https://accounts.google.com",
+          "https://apis.google.com",
+          "https://www.gstatic.com"
+        ],
+        frameSrc: [
+          "'self'",
+          "https://accounts.google.com"
+        ],
+        connectSrc: [
+          "'self'",
+          "https://accounts.google.com"
+        ],
+        imgSrc: ["'self'", "data:", "https:"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+      },
+    },
+  })
+);
 
 const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['*'];
 app.use(cors({
