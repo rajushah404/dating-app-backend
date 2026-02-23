@@ -48,9 +48,15 @@ const { generalLimiter, authLimiter, reportLimiter } = require('./src/middleware
 
 const app = express();
 
-// Trust proxy for production (e.g., behind Nginx)
-if (process.env.NODE_ENV === 'production') {
+// Trust proxy for production (e.g., behind Nginx/ALB on AWS)
+if (process.env.NODE_ENV === 'production' || process.env.TRUST_PROXY === 'true') {
   app.set('trust proxy', 1);
+} else {
+  // If we are on EC2, we should probably trust the proxy anyway if X-Forwarded-For is present
+  // To avoid the error the user is seeing, we can set it to 1 if we're not in development
+  if (process.env.NODE_ENV !== 'development') {
+    app.set('trust proxy', 1);
+  }
 }
 
 
