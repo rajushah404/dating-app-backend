@@ -49,15 +49,9 @@ const { generalLimiter, authLimiter, reportLimiter } = require('./src/middleware
 const app = express();
 
 // Trust proxy for production (e.g., behind Nginx/ALB on AWS)
-if (process.env.NODE_ENV === 'production' || process.env.TRUST_PROXY === 'true') {
-  app.set('trust proxy', 1);
-} else {
-  // If we are on EC2, we should probably trust the proxy anyway if X-Forwarded-For is present
-  // To avoid the error the user is seeing, we can set it to 1 if we're not in development
-  if (process.env.NODE_ENV !== 'development') {
-    app.set('trust proxy', 1);
-  }
-}
+// We set it to true or 1 to trust X-Forwarded-For headers
+app.set('trust proxy', 1);
+logger.info('Express "trust proxy" is set to 1');
 
 
 // --- Production Middlewares ---
@@ -107,7 +101,9 @@ app.use('/api/legal', legalRoutes);
 app.use('/api/verify', verificationRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Mount auth at both /api and / for compatibility with frontend
 app.use('/api', authLimiter, authRoutes);
+app.use('/', authLimiter, authRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -122,6 +118,15 @@ app.get('/health', (req, res) => {
 // Root route
 app.get('/', (req, res) => {
   success(res, 'Welcome to MAYA (Premium Dating App) API');
+});
+
+// 404 Handler - log the request path to help debug what the frontend is calling
+app.use((req, res, next) => {
+  logger.warn(`404 Not Found: ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`
+  });
 });
 
 // Global Error Handling Middleware (must be after all routes)

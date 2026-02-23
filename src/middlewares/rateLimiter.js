@@ -18,6 +18,11 @@ const authLimiter = rateLimit({
     limit: parseInt(process.env.AUTH_LIMIT_MAX) || 100,
     standardHeaders: 'draft-7',
     legacyHeaders: false,
+    keyGenerator: (req) => {
+        // Log the IP being used for rate limiting
+        const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        return ip;
+    },
     message: {
         success: false,
         message: 'Too many authentication attempts, please try again later'
