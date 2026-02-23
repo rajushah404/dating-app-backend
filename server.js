@@ -107,7 +107,7 @@ app.use('/api/legal', legalRoutes);
 app.use('/api/verify', verificationRoutes);
 app.use('/api/admin', adminRoutes);
 
-app.use('/', authLimiter, authRoutes);
+app.use('/api', authLimiter, authRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
